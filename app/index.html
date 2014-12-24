@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+
+	<meta charset="UTF-8">
+	<title>Simple Plot</title>
+	<!-- build:css({.tmp,app}) styles/main.css -->
+	<link rel="stylesheet" href="styles/app.css" />
+	<!-- endbuild -->
+	<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
+
+
+</head>
+<body>
+	<form id="req_form" class="form-inline">
+		<input class="form-control input dark" type="text" id="s1" placeholder="Symbol 1" value="AAPL" />
+		<input class="form-control input dark" type="text" id="s2" placeholder="Symbol 2" value="PBT" />
+		<div class="input-group">
+			<input type="text" id="months_ago" class="form-control input dark" value="3" />
+			<span class="input-group-addon">month</span>
+		</div>
+		<input class="form-control btn btn-primary" type="submit" />
+	</form>
+	<div id="plot"></div>
+</body>
+
+
+<script src="scripts/vendor.js"></script>
+<!-- build:js scripts/main.js -->
+<script src="scripts/main.js"></script>
+<!-- endbuild -->
+
+
+
+</html>

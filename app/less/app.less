@@ -1,0 +1,72 @@
+/* ==========================================================================
+   App Stylesheet
+   app.less
+   ========================================================================== */
+
+
+/* Vendor Styles and Setting (bootstrao > variables)
+   ======================================================================== */
+@import "bootstrap.less";
+
+
+/* Mixins (User defined mixins)
+   ======================================================================== */
+
+
+/* Components
+   ======================================================================== */
+@import "components/base.less";
+
+
+
+#chart_div {
+	position: absolute;
+	top: 50px;
+	left: 0;
+	right: 0;
+	bottom: 0;
+}
+#req_form {
+	z-index: 1000;
+	width: 100%;
+	text-align: center;
+	padding-top: 10px;
+}
+.axis {
+    fill: none;
+    stroke: #AAA;
+    stroke-width: 1px;
+}
+.tooltip {
+	background-color: #fff;
+	padding: 5px;
+	box-shadow: 2px 2px 20px rgba(0,0,0,0.2);
+}
+body {
+	background-color: #000;
+}
+.label {
+	color: #aaa !important;
+	fill: #888;
+}
+.form-control.input.dark {
+	background-color: #222;
+	border-color: #555;
+	color: #888;
+}
+#plot {
+	margin-top: 20px;
+}
+.input-group-addon {
+	background-color: #333;
+	color: #888;
+	border-color: #555;
+}
+#months_ago {
+	width: 40px;
+}
+
+.grid .tick {
+	stroke: #222;
+	opacity: 0.2;
+}

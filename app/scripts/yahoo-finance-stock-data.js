@@ -1,10 +1,8 @@
-
+/*
 Yahoo Finance stock historical data, prices and details retrieval function written in Javascript, jQuery and YQL
 v2013-08-05
 (c) 2013 by Fincluster ltd - http://fincluster.com <dev@fincluster.com>
 */
-
-
 (function($) {
 
     // a utility function useful for returning values for certain charting packages
@@ -42,7 +40,6 @@ v2013-08-05
         .replace('{endDate}', opts.endDate);
 
         var url = defs.baseURL + query + (defs.suffixURL[type] || '');
-        // console.log(url);
         $.getJSON(url, function(data) {
             var err = null;
             if (!data || !data.query) {
@@ -52,6 +49,43 @@ v2013-08-05
     }
     window.getStock = getStock;
 
+    function getStockQF(opts, type, complete) {
+        var defs = {
+            desc: false,
+            baseURL: 'http://www.quandl.com/api/v1/datasets/CHRIS/CME_',
+            query: {
+                quotes: 'not implemented',
+                historicaldata: '{stock}.json?trim_start={startDate}'
+            },
+            suffixURL: {
+                quotes: 'not implemented',
+                historicaldata: '&auth_token=ckc4qRLaqqyzxhd9y-Cf'
+            }
+        };
+
+        opts = opts || {};
+
+        if (!opts.stock) {
+            complete('No stock defined');
+            return;
+        }
+
+        var query = defs.query[type]
+        .replace('{stock}', opts.stock.substring(3,opts.stock.length))
+        .replace('{startDate}', opts.startDate)
+
+        var url = defs.baseURL + query + (defs.suffixURL[type] || '');
+        $.getJSON(url, function(data) {
+            var err = null;
+            if (!data || !data.data) {
+                console.log('error');
+                err = true;
+            }
+            console.log(data);
+            complete(err, !err && data);    });
+    }
+    window.getStockQF = getStockQF;
+
     function getStocks(list_opts, type, complete) {
         // figure out how many requests are neccessary and make a container for the results
         var remaining = list_opts.stocks.length;
@@ -60,15 +94,36 @@ v2013-08-05
         list_opts.stocks.forEach(function(stock) {
             opts = list_opts;
             opts['stock'] = stock; // this is the stock symbol we will be feeding into getStock()
-
-            getStock(opts, type, function(err, data) {
-                remaining -= 1;
-                results.push(data);
-                // check if finshed fetching
-                if (remaining == 0) {
-                    complete(null, results);
-                }
-            });
+            if (stock.indexOf('QF.') > -1) {
+                console.log('qf');
+                getStockQF(opts, type, function(err, data) {
+                    remaining -= 1;
+                    data['quote'] = []
+                    var colNames = data.column_names;
+                    data['data'].forEach(function(day) {
+                        var d = {};
+                        colNames.forEach(function(colName) {
+                            var i = colNames.indexOf(colName);
+                            d[colName] = day[i];
+                        });
+                        d['Close'] = d['Settle'];
+                        data['quote'].push(d);
+                    });
+                    results.push(data);
+                    if (remaining == 0) {
+                        complete(null, results);
+                    }
+                });
+            } else {
+                getStock(opts, type, function(err, data) {
+                    remaining -= 1;
+                    results.push(data);
+                    // check if finshed fetching
+                    if (remaining == 0) {
+                        complete(null, results);
+                    }
+                });
+            }
         });
     }
     window.getStocks = getStocks;
@@ -98,11 +153,9 @@ v2013-08-05
                 dates.push(day.Date);
                 latest.push(null);
             });
-            console.log(dates);
 
             data.forEach(function(stock) {
                 var symbol = stock.quote[0].Symbol;
-                // console.log(symbol);
                 stockQuotes = [symbol];
                 stock.quote.forEach(function(day) {
                     var dailyAvg = (parseFloat(day.High) + parseFloat(day.Low)) / 2;
@@ -139,4 +192,5 @@ function zip(arrays) {
         return arrays.map(function(array){return array[i]})
     });
 }
+*/
 
