@@ -17706,6 +17706,35 @@ function showPlot(data) {
 		.range([height - margins.top - margins.bottom, 0]);
 
 
+	function make_x_axis() {
+		return d3.svg.axis()
+			.scale(x)
+			.orient('bottom')
+			.tickPadding(2);
+	}
+
+	function make_y_axis() {
+		return d3.svg.axis()
+			.scale(y)
+			.orient('left')
+			.tickPadding(2);
+	}
+
+	svg.append('g')
+		.attr('class', 'grid')
+		.attr('transform', 'translate(0,' + height + ')')
+		.call(make_x_axis()
+			.tickSize(-height, 0, -margins.bottom - 30)
+			.tickFormat('')
+		);
+
+	svg.append('g')
+		.attr('class', 'grid')
+		.call(make_y_axis()
+			.tickSize(-width, 0, 0)
+			.tickFormat('')
+		);
+
 
 	var tooltip = d3.select('body').append('div')
 		.attr('class', 'tooltip')
@@ -17728,6 +17757,7 @@ function showPlot(data) {
 		.attr('dy', '.71em')
 		.text(data[0][1].Symbol);
 
+
 	svg.append('g').attr('class', 'x axis').attr('transform', 'translate(0,' + y.range()[0] + ')');
 	svg.append('g').attr('class', 'y axis');
 
@@ -17735,34 +17765,7 @@ function showPlot(data) {
 	var yAxis = d3.svg.axis().scale(y).orient('left').tickPadding(2);
 
 
-	function make_x_axis() {
-		return d3.svg.axis()
-			.scale(x)
-			.orient('bottom')
-			.tickPadding(2);
-	}
 
-	function make_y_axis() {
-		return d3.svg.axis()
-			.scale(y)
-			.orient('left')
-			.tickPadding(2);
-	}
-
-	svg.append('g')
-		.attr('class', 'grid')
-		.attr('transform', 'translate(0,' + height + ')')
-		.call(make_x_axis()
-			.tickSize(-height, 0, 0)
-			.tickFormat('')
-		);
-
-	svg.append('g')
-		.attr('class', 'grid')
-		.call(make_y_axis()
-			.tickSize(-width, 0, 0)
-			.tickFormat('')
-		);
 
 	// figure out least squares regression
 	var xSeries = data.map(function(d) { return parseFloat(d[0].Close)});
@@ -17772,15 +17775,15 @@ function showPlot(data) {
 
 	svg.append('text')
 		.attr('class', 'label')
-		.attr('x', width / 2 + 100)
+		.attr('x', width - 200)
 		.attr('y', height - 35)
-		.text('r squared: ' + leastSquaresCoeff[2].toString())
+		.text('r squared: ' + leastSquaresCoeff[2].toFixed(2).toString())
 
 	svg.append('text')
 		.attr('class', 'label')
-		.attr('x', width / 2 + 100)
+		.attr('x', width - 200)
 		.attr('y', height - 45)
-		.text('slope: ' + leastSquaresCoeff[0].toString())
+		.text('slope: ' + leastSquaresCoeff[0].toFixed(2).toString())
 
 	// add curves
 	var lineFunction = d3.svg.line()
@@ -18072,7 +18075,6 @@ v2013-08-05
                 console.log('error');
                 err = true;
             }
-            console.log(data);
             complete(err, !err && data);    });
     }
     window.getStockQF = getStockQF;
@@ -18086,7 +18088,6 @@ v2013-08-05
             opts = list_opts;
             opts['stock'] = stock; // this is the stock symbol we will be feeding into getStock()
             if (stock.indexOf('QF.') > -1) {
-                console.log('qf');
                 getStockQF(opts, type, function(err, data) {
                     remaining -= 1;
                     data['quote'] = []
@@ -18098,6 +18099,7 @@ v2013-08-05
                             d[colName] = day[i];
                         });
                         d['Close'] = d['Settle'];
+                        d['Symbol'] = data['code'];
                         data['quote'].push(d);
                     });
                     results.push(data);
