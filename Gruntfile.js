@@ -219,7 +219,7 @@ module.exports = function(grunt) {
       },
       dist: {
         src: ['.tmp/scripts/vendor.js', '.tmp/scripts/main.js'],
-        dest: '.tmp/scripts/app.js'
+        dest: 'dist/scripts/main.js'
       }
     },
     // not used since Uglify task does concat,
@@ -230,9 +230,12 @@ module.exports = function(grunt) {
     // not enabled since usemin task does concat and uglify
     // check index.html to edit your build targets
     // enable this task if you prefer defining your build targets here
-    /*uglify: {
-      dist: {}
-    },*/
+    uglify: {
+      dist: {
+        src: '.tmp/scripts/app.js',
+        dest: '.tmp/scripts/app.js'
+      }
+    },
     'bower-install': {
       app: {
         html: '<%= yeoman.app %>/index.html',
@@ -291,14 +294,14 @@ module.exports = function(grunt) {
       
       //     <!-- build:css({.tmp,app}) styles/main.css -->
       
-      // dist: {
-      //     files: {
-      //         '/styles/main.css': [
-      //             '.tmp/styles/{,*/}*.css',
-      //             '/styles/{,*/}*.css'
-      //         ]
-      //     }
-      // }
+      dist: {
+          files: {
+              '/styles/main.css': [
+                  '.tmp/styles/{,*/}*.css',
+                  '/styles/{,*/}*.css'
+              ]
+          }
+      }
     },
     htmlmin: {
       dist: {
@@ -421,7 +424,6 @@ module.exports = function(grunt) {
     'concat',
     'cssmin',
     'uglify',
-    'modernizr',
     'copy:dist',
     'rev',
     'usemin'

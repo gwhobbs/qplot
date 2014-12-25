@@ -81,7 +81,6 @@ v2013-08-05
                 console.log('error');
                 err = true;
             }
-            console.log(data);
             complete(err, !err && data);    });
     }
     window.getStockQF = getStockQF;
@@ -95,7 +94,6 @@ v2013-08-05
             opts = list_opts;
             opts['stock'] = stock; // this is the stock symbol we will be feeding into getStock()
             if (stock.indexOf('QF.') > -1) {
-                console.log('qf');
                 getStockQF(opts, type, function(err, data) {
                     remaining -= 1;
                     data['quote'] = []
@@ -107,6 +105,7 @@ v2013-08-05
                             d[colName] = day[i];
                         });
                         d['Close'] = d['Settle'];
+                        d['Symbol'] = data['code'];
                         data['quote'].push(d);
                     });
                     results.push(data);
