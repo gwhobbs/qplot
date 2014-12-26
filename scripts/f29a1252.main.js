@@ -1,7 +1,7 @@
 /*!
  * simple-plot-0.0.0
  * 
- * 2014-12-25
+ * 2014-12-26
  */
 
 require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"backbone":[function(require,module,exports){
@@ -17658,18 +17658,9 @@ var stocks = ['MSFT', 'AAPL']; // defaults for testing
 
 
 function showPlot(data) {
-
-	if (dayGroup) {
-		dayGroup.transition()
-		.attr('opacity',0)
-		.duration(500);
-	}
 	$('#plot').empty();
 
-	console.log(data[0][0].Close);
-	console.log(data[1][0].Close);
-
-	// just to have some space around items
+	// add some margins around the graph
 	var margins = {
 		'left' : 70,
 		'right' : 30,
@@ -17678,26 +17669,25 @@ function showPlot(data) {
 	};
 
 	var width = $(document).width();
-	var height = $(document).height() - 100;
+	var height = $(document).height() - 100; // height of title bar
 
-	// this will be our color scale.  An Ordinal scale.
+	// this will be the color scale for the dots, oldest being blue, newest being red
 	var colors = d3.scale.linear()
 		.domain([0,data.length])
 		.interpolate(d3.interpolateHsl)
 		.range(['#ff0000', '#0000ff']);
 
-	// add the SVG component to the plot div
+	// add the SVG component #plot
 	var svg = d3.select('#plot')
 		.append('svg').attr('width', width).attr('height', height)
 		.append('g').attr('transform', 'translate(' + margins.left + ',' + margins.top + ')');
 
+	// build the x and y domain and range
 	var x = d3.scale.linear()
 		.domain(d3.extent(data, function (d) {
 			return parseFloat(d[0].Close);
 		}))
 		.range([0, width - margins.left - margins.right]);
-
-
 
 	var y = d3.scale.linear()
 		.domain(d3.extent(data, function (d) {
@@ -17705,41 +17695,45 @@ function showPlot(data) {
 		}))
 		.range([height - margins.top - margins.bottom, 0]);
 
-
-	function make_x_axis() {
+	// functions to produces the axes
+	function xAxis() {
 		return d3.svg.axis()
 			.scale(x)
 			.orient('bottom')
 			.tickPadding(2);
 	}
 
-	function make_y_axis() {
+	function yAxis() {
 		return d3.svg.axis()
 			.scale(y)
 			.orient('left')
 			.tickPadding(2);
 	}
 
+	// make background grid
 	svg.append('g')
 		.attr('class', 'grid')
 		.attr('transform', 'translate(0,' + height + ')')
-		.call(make_x_axis()
+		.call(xAxis()
 			.tickSize(-height, 0, -margins.bottom - 30)
 			.tickFormat('')
 		);
 
 	svg.append('g')
 		.attr('class', 'grid')
-		.call(make_y_axis()
+		.call(yAxis()
 			.tickSize(-width, 0, 0)
 			.tickFormat('')
 		);
 
+	// draw x and y axes
+	svg.append('g').attr('class', 'x axis').attr('transform', 'translate(0,' + y.range()[0] + ')');
+	svg.append('g').attr('class', 'y axis');
 
-	var tooltip = d3.select('body').append('div')
-		.attr('class', 'tooltip')
-		.style('opacity',0);
+	svg.selectAll('g.y.axis').call(yAxis());
+	svg.selectAll('g.x.axis').call(xAxis());
 
+	// draw axes names
 	svg.append('text')
 		.attr('fill', '#555')
 		.attr('class', 'label')
@@ -17758,11 +17752,12 @@ function showPlot(data) {
 		.text(data[0][1].Symbol);
 
 
-	svg.append('g').attr('class', 'x axis').attr('transform', 'translate(0,' + y.range()[0] + ')');
-	svg.append('g').attr('class', 'y axis');
+	var tooltip = d3.select('body').append('div')
+		.attr('class', 'tooltip')
+		.style('opacity',0);
 
-	var xAxis = d3.svg.axis().scale(x).orient('bottom').tickPadding(2);
-	var yAxis = d3.svg.axis().scale(y).orient('left').tickPadding(2);
+	
+
 
 
 
@@ -17773,61 +17768,67 @@ function showPlot(data) {
 
 	var leastSquaresCoeff = leastSquares(xSeries, ySeries);
 
+	// print r squared
 	svg.append('text')
 		.attr('class', 'label')
 		.attr('x', width - 200)
 		.attr('y', height - 35)
-		.text('r squared: ' + leastSquaresCoeff[2].toFixed(2).toString())
+		.text('r squared: ' + leastSquaresCoeff[2].toFixed(2).toString());
 
+	// print slope
 	svg.append('text')
 		.attr('class', 'label')
 		.attr('x', width - 200)
 		.attr('y', height - 45)
-		.text('slope: ' + leastSquaresCoeff[0].toFixed(2).toString())
+		.text('slope: ' + leastSquaresCoeff[0].toFixed(2).toString());
 
 	// add curves
 	var lineFunction = d3.svg.line()
-		.x(function(d) { return parseFloat(x(d[0].Close))})
-		.y(function(d) { return parseFloat(y(d[1].Close))})
+		.x(function(d) { return parseFloat(x(d[0].Close)); })
+		.y(function(d) { return parseFloat(y(d[1].Close)); })
 		.interpolate('cardinal');
 
 	var pathline = svg.selectAll('.' + 'pathline')
 		.data(data);
 
-
-	// svg.append('path').data(data)
-	// 	.attr('d', lineFunction(data))
-	// 	.attr('stroke', '#222')
-	// 	.attr('stroke-width', 2)
-	// 	.attr('fill', 'none');
-
-$('#plot').animate({opacity:1});
+	// make the plot visible
+	$('#plot').animate({opacity:1});
 
 	function plotTrendline(leastSquaresCoeff, cssClass, color, width) {
 		var x1 = d3.min(xSeries);
+		var y1 = trendlineY(d3.min(xSeries));
 
-	var y1 = trendlineY(d3.min(xSeries));
-	var x2 = d3.max(xSeries);
-	var y2 = trendlineY(d3.max(xSeries));
-	var trendData = [[x1, y1, x2, y2]];
-	var trendline = svg.selectAll('.' + cssClass)
-		.data(trendData);
+		if ( y1 < d3.min(ySeries) ) {
+			y1 = d3.min(ySeries);
+			x1 = trendlineX(y1);
+		}
 
-	trendline.enter()
-		.append('line')
-		.attr('class', cssClass)
-		.attr('x1', function(d) {return x(d[0])})
-		.attr('y1', function(d) {return y(d[1])})
-		.attr('x2', function(d) {return x(d[2])})
-		.attr('y2', function(d) {return y(d[3])})
-		.attr('stroke-dasharray', '10,10')
-		.attr('stroke', color)
-		.attr('stroke-width', width)
-		.attr('opacity',0)
-		.transition()
-		.attr('opacity',1)
-		.delay(0)
-		.duration(1000);
+		var x2 = d3.max(xSeries);
+		var y2 = trendlineY(d3.max(xSeries));
+
+		if (y2 > d3.max(ySeries)) {
+			y2 = d3.max(ySeries);
+			x2 = trendlineX(y2);
+		}
+
+		var trendData = [[x1, y1, x2, y2]];
+		var trendline = svg.selectAll('.' + cssClass)
+			.data(trendData);
+
+		trendline.enter()
+			.append('line')
+			.attr('class', cssClass)
+			.attr('x1', function(d) {return x(d[0]);})
+			.attr('y1', function(d) {return y(d[1]);})
+			.attr('x2', function(d) {return x(d[2]);})
+			.attr('y2', function(d) {return y(d[3]);})
+			.attr('stroke-dasharray', '10,10')
+			.attr('stroke', color)
+			.attr('stroke-width', width)
+			.attr('opacity',0) // start at 0 opacity, and fade in
+			.transition()
+			.attr('opacity',1)
+			.duration(1000);
 	}
 
 	plotTrendline(leastSquaresCoeff, 'trendline', '#888', 2);
@@ -17837,52 +17838,48 @@ $('#plot').animate({opacity:1});
 		return leastSquaresCoeff[0]*xVal + leastSquaresCoeff[1];
 	}
 
-		// figure out the standard deviation
-		function standardDeviation(data){
-		  
-		  var squareDiffs = data.map(function(day){
-		    var diff = day[1].Close - trendlineY(day[0].Close);
-		    var sqrDiff = diff * diff;
-		    return sqrDiff;
-		  });
-		  
-		  var avgSquareDiff = average(squareDiffs);
-		 
-		  var stdDev = Math.sqrt(avgSquareDiff);
-		  return stdDev;
-		}
-		 
-		function average(data){
-		  var sum = data.reduce(function(sum, value){
-		    return sum + value;
-		  }, 0);
-		 
-		  var avg = sum / data.length;
-		  return avg;
-		}
+	function trendlineX(yVal) {
+		return (yVal - leastSquaresCoeff[1]) / leastSquaresCoeff[0];
+	}
 
-		var sd = standardDeviation(data);
+	// figure out the standard deviation
+	function standardDeviation(data){
+		var squareDiffs = data.map(function(day){
+			var diff = day[1].Close - trendlineY(day[0].Close);
+			var sqrDiff = diff * diff;
+			return sqrDiff;
+		});
+	  
+	  var avgSquareDiff = average(squareDiffs);
+	 
+	  var stdDev = Math.sqrt(avgSquareDiff);
+	  return stdDev;
+	}
+	 
+	function average(data){
+	  var sum = data.reduce(function(sum, value){
+	    return sum + value;
+	  }, 0);
+	 
+	  var avg = sum / data.length;
+	  return avg;
+	}
+
+	var sd = standardDeviation(data);
+
+	// plot a trendline 1 standard deivation up
+	var coeffSdTop = leastSquaresCoeff;
+	coeffSdTop[1] += sd;
+	plotTrendline(coeffSdTop, 'sdline', '#555', 1);
+
+	// plot a trendline 1 standard deviation down
+	var coeffSdBottom = leastSquaresCoeff;
+	coeffSdBottom[1] -= 2 * sd;
+	plotTrendline(coeffSdBottom, 'sdline2', '#555', 1);
 
 
 
-		var coeffSdTop = leastSquaresCoeff;
-		coeffSdTop[1] += sd;
-		// now plot sd lines
-		plotTrendline(coeffSdTop, 'sdline', '#555', 1);
 
-		var coeffSdBottom = leastSquaresCoeff;
-		coeffSdBottom[1] -= 2 * sd;
-
-
-
-		
-		plotTrendline(coeffSdBottom, 'sdline2', '#555', 1);
-
-	// apply results of least squares regression
-	var x1 = 2;
-
-	svg.selectAll('g.y.axis').call(yAxis);
-	svg.selectAll('g.x.axis').call(xAxis);
 
 	var day = svg.selectAll('g.node').data(data, function (d) {
 		return d[2]; // this is the date string and will let d3 know the uniqueness of the item
@@ -17894,12 +17891,13 @@ $('#plot').animate({opacity:1});
 		});
 
 	var monthsAgo = parseInt($('input#months_ago').val());
-	// add a circle
+	
+	// draw circles
 	dayGroup.append('circle')
 		.attr('r',0)
 		.attr('class', 'dot')
 		.style('fill', function(d) {
-			return colors(data.indexOf(d)); // TODO: replace this with date function
+			return colors(data.indexOf(d));
 		})
 		.on('mouseover', function(d) {
 			tooltip.transition()
@@ -17927,12 +17925,6 @@ $('#plot').animate({opacity:1});
 			return (data.length - data.indexOf(d)) * (5/monthsAgo*3);
 		});
 
-	//add some text
-
-
-
-
-
 }
 
 // returns slope, intercept and r-square of the line
@@ -17958,37 +17950,34 @@ $('#plot').animate({opacity:1});
 		return [slope, intercept, rSquare];
 	}
 
-
-
-var monthsAgo = $('input#months_ago').val();
-
 var moment = require('moment');
-var d2 = moment().format('YYYY-MM-DD');
-var d1 = moment().subtract(parseInt(monthsAgo), 'months').format('YYYY-MM-DD');
 
-getStocksSortedByDay({ stocks: [$('#s1').val(), $('#s2').val()], startDate: d1, endDate: d2 }, 'historicaldata', function(err, data) {
+function getDateRange() {
+	var monthsAgo = $('input#months_ago').val();
+	var d2 = moment().format('YYYY-MM-DD');
+	var d1 = moment().subtract(parseInt(monthsAgo), 'months').format('YYYY-MM-DD');
+	return { start: d1, end: d2 };
+}
+
+// on page load, retrieve initial stock data
+getStocksSortedByDay({ stocks: [$('#s1').val(), $('#s2').val()], startDate: getDateRange().start, endDate: getDateRange().end }, 'historicaldata', function(err, data) {
 	showPlot(data);
 });
 
 function handleSubmit() {
+	// fade out existing chart
 	$('#plot').animate({opacity:0},300);
-	var monthsAgo = $('input#months_ago').val();
 
-var moment = require('moment');
-var d2 = moment().format('YYYY-MM-DD');
-var d1 = moment().subtract(parseInt(monthsAgo), 'months').format('YYYY-MM-DD');
-
-	getStocksSortedByDay({ stocks: [$('#s1').val(), $('#s2').val()], startDate: d1, endDate: d2 }, 'historicaldata', function(err, data) {
+	// retrieve the data, and call showPlot() when complete
+	getStocksSortedByDay({ stocks: [$('#s1').val(), $('#s2').val()], startDate: getDateRange().start, endDate: getDateRange().end }, 'historicaldata', function(err, data) {
 		showPlot(data);
 	});
-	return false;
 }
 
 var form = $('#req_form').submit(function(e) {
 	e.preventDefault();
 	handleSubmit();
-
-})
+});
 
 
 },{"./app.js":1,"./yahoo-finance-stock-data.js":3,"d3-browserify":4,"moment":5}],3:[function(require,module,exports){
@@ -18046,7 +18035,7 @@ v2013-08-05
     function getStockQF(opts, type, complete) {
         var defs = {
             desc: false,
-            baseURL: 'http://www.quandl.com/api/v1/datasets/CHRIS/CME_',
+            baseURL: 'http://www.quandl.com/api/v1/datasets/',
             query: {
                 quotes: 'not implemented',
                 historicaldata: '{stock}.json?trim_start={startDate}'
@@ -18065,7 +18054,7 @@ v2013-08-05
         }
 
         var query = defs.query[type]
-        .replace('{stock}', opts.stock.substring(3,opts.stock.length))
+        .replace('{stock}', opts.stock)
         .replace('{startDate}', opts.startDate)
 
         var url = defs.baseURL + query + (defs.suffixURL[type] || '');
@@ -18082,12 +18071,13 @@ v2013-08-05
     function getStocks(list_opts, type, complete) {
         // figure out how many requests are neccessary and make a container for the results
         var remaining = list_opts.stocks.length;
-        var results = [];
+        var stocks = list_opts.stocks;
+        var results = [ null, null ];
         // retrieve data for each stock asynchronously, then combine when finished
         list_opts.stocks.forEach(function(stock) {
             opts = list_opts;
             opts['stock'] = stock; // this is the stock symbol we will be feeding into getStock()
-            if (stock.indexOf('QF.') > -1) {
+            if (stock.indexOf('/') > -1) {
                 getStockQF(opts, type, function(err, data) {
                     remaining -= 1;
                     data['quote'] = []
@@ -18102,7 +18092,7 @@ v2013-08-05
                         d['Symbol'] = data['code'];
                         data['quote'].push(d);
                     });
-                    results.push(data);
+                    results[stocks.indexOf(stock)] = data;
                     if (remaining == 0) {
                         complete(null, results);
                     }
@@ -18110,7 +18100,7 @@ v2013-08-05
             } else {
                 getStock(opts, type, function(err, data) {
                     remaining -= 1;
-                    results.push(data);
+                    results[stocks.indexOf(stock)] = data;
                     // check if finshed fetching
                     if (remaining == 0) {
                         complete(null, results);
