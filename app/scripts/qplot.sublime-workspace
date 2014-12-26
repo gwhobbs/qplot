@@ -1,0 +1,1081 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"leastSquare",
+				"leastSquaresCoeff"
+			],
+			[
+				"flips",
+				"flips"
+			],
+			[
+				"problemPoint",
+				"problemPoint3"
+			],
+			[
+				"ACCESS",
+				"ACCESS_TOKEN_SECRET"
+			],
+			[
+				"STATUS_DEC",
+				"STATUS_NETWORK_DISSATISFACTION"
+			],
+			[
+				"htt",
+				"HttpResponse"
+			],
+			[
+				"STATUS_UP",
+				"STATUS_RECENTLY_UPGRADED"
+			],
+			[
+				"find_elem",
+				"find_element_by_css_selector"
+			],
+			[
+				"non",
+				"nonUpgradeEligibleLines"
+			],
+			[
+				"contact",
+				"contactURL_base"
+			],
+			[
+				"selec",
+				"querySelectorAll"
+			]
+		]
+	},
+	"buffers":
+	[
+		{
+			"contents": "<!DOCTYPE html>\n\n<html lang=\"en\">\n<head>\n\n	<meta charset=\"UTF-8\">\n	<title>Simple Plot</title>\n	<link rel=\"stylesheet\" href=\"styles/app.css\" />\n	<script type=\"text/javascript\" src=\"https://code.jquery.com/jquery-2.1.3.min.js\"></script>\n\n\n</head>\n<body>\n	<form id=\"req_form\" class=\"form-inline\">\n		<input class=\"form-control input dark\" type=\"text\" id=\"s1\" placeholder=\"Symbol 1\" value=\"QF.CL1\" />\n		<input class=\"form-control input dark\" type=\"text\" id=\"s2\" placeholder=\"Symbol 2\" value=\"PBT\" />\n		<div class=\"input-group\">\n			<input type=\"text\" id=\"months_ago\" class=\"form-control input dark\" value=\"3\" />\n			<span class=\"input-group-addon\">month</span>\n		</div>\n		<input class=\"form-control btn btn-primary\" type=\"submit\" />\n	</form>\n	<div id=\"plot\"></div>\n</body>\n\n<!-- <script src=\"scripts/vendor.js\"></script>\n --><script src=\"scripts/main.js\"></script>\n\n</html>",
+			"file": "/Users/granthobbs/Developer/qplot/app/index.html",
+			"file_size": 868,
+			"file_write_time": 130639327540000000,
+			"settings":
+			{
+				"buffer_size": 866,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "main.js",
+			"settings":
+			{
+				"buffer_size": 8770,
+				"line_ending": "Unix"
+			}
+		}
+	],
+	"build_system": "",
+	"command_palette":
+	{
+		"height": 374.0,
+		"selected_items":
+		[
+			[
+				"instal",
+				"Package Control: Install Package"
+			],
+			[
+				"install",
+				"Package Control: Install Package"
+			],
+			[
+				"insta",
+				"Package Control: Install Package"
+			],
+			[
+				"package",
+				"Package Control: Remove Package"
+			],
+			[
+				"coffee",
+				"Set Syntax: CoffeeScript"
+			],
+			[
+				"disable pack",
+				"Package Control: Disable Package"
+			],
+			[
+				"rest",
+				"RESTer: HTTP Request"
+			],
+			[
+				"rester",
+				"RESTer: HTTP Request"
+			],
+			[
+				"http",
+				"RESTer: HTTP Request"
+			],
+			[
+				"sublime",
+				"SublimeLinter: Reset"
+			],
+			[
+				"linter",
+				"Preferences: SublimeLinter Settings – User"
+			],
+			[
+				"angular",
+				"Set Syntax: HTML (Angular.js)"
+			],
+			[
+				"html",
+				"Set Syntax: HTML (Angular.js)"
+			]
+		],
+		"width": 664.0
+	},
+	"console":
+	{
+		"height": 139.0,
+		"history":
+		[
+			"Install Package",
+			"import urllib.request,os; pf = 'Package Control.sublime-package'; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); open(os.path.join(ipp, pf), 'wb').write(urllib.request.urlopen( 'http://sublime.wbond.net/' + pf.replace(' ','%20')).read())",
+			"import urllib.request,os; pf = 'Package Control.sublime-package'; ipp = "
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"expanded_folders":
+	[
+		"/Users/granthobbs/Developer/qplot"
+	],
+	"file_history":
+	[
+		"/Users/granthobbs/Developer/qplot/Gruntfile.js",
+		"/Users/granthobbs/Desktop/index.html",
+		"/Users/granthobbs/Developer/simple-plot/Gruntfile.js",
+		"/Users/granthobbs/Developer/simple-plot/app/index.html",
+		"/Users/granthobbs/Developer/simple-plot/dist/scripts/0530d3ea.main.js",
+		"/Users/granthobbs/Developer/simple-plot/dist/index.html",
+		"/Users/granthobbs/Developer/sp2/gulp/tasks/watch.js",
+		"/Users/granthobbs/Developer/sp2/app/index.html",
+		"/Users/granthobbs/Developer/sp2/gulp/tasks/dist.js",
+		"/Users/granthobbs/Developer/sp2/gulp/tasks/default.js",
+		"/Users/granthobbs/Developer/sp2/gulp/tasks/build.js",
+		"/Users/granthobbs/Developer/sp2/gulp/index.js",
+		"/Users/granthobbs/Developer/simple-plot/app/less/app.less",
+		"/Users/granthobbs/Developer/simple-plot/app/scripts/main.js",
+		"/Users/granthobbs/Developer/sp2/gulpfile.js",
+		"/Users/granthobbs/Developer/sp2/gulp/config.js",
+		"/Users/granthobbs/Developer/simple-plot/node_modules/debowerify/node_modules/bower/node_modules/mout/lang/isNull.js",
+		"/Users/granthobbs/Developer/simple-plot/app/bower_components/modernizr/modernizr.js",
+		"/Users/granthobbs/Developer/simple-plot/node_modules/load-grunt-tasks/load-grunt-tasks.js",
+		"/Users/granthobbs/Developer/simple-plot/.tmp/index.html",
+		"/Users/granthobbs/Developer/simple-plot/yahoo-finance-stock-data.js",
+		"/Users/granthobbs/Developer/simple-plot/bower.json",
+		"/Users/granthobbs/Developer/simple-plot/.tmp/scripts/main.js",
+		"/Users/granthobbs/Developer/simple-plot/app/scripts/yahoo-finance-stock-data.js",
+		"/Users/granthobbs/Developer/simple-plot/.tmp/scripts/vendor.js",
+		"/Users/granthobbs/Developer/simple-plot/dist/styles/dfc79008.app.css",
+		"/Users/granthobbs/Developer/simple-plot/dist/styles/app.css",
+		"/Users/granthobbs/Developer/simple-plot/.tmp/styles/app.css",
+		"/Users/granthobbs/Developer/simple-plot/dist/scripts/2b87dee0.main.js",
+		"/Users/granthobbs/Developer/simple-plot/node_modules/jquery/src/ajax/load.js",
+		"/Users/granthobbs/Developer/simple-plot/node_modules/browserify-shim/test/shim/fixtures/shims/lib-depending-on-jquery.js",
+		"/Users/granthobbs/Developer/simple-plot/node_modules/backbone/LICENSE",
+		"/Users/granthobbs/Developer/simple-plot/build/modernizr-custom.js",
+		"/Users/granthobbs/Developer/simple-plot/node_modules/debowerify/node_modules/bower/node_modules/inquirer/node_modules/cli-color/node_modules/es5-ext/lib/Error/valid-error.js",
+		"/Users/granthobbs/Developer/simple-plot/node_modules/browserify/node_modules/JSONStream/test/multiple_objects.js",
+		"/Users/granthobbs/Developer/simple-plot/node_modules/browserify/test/multi_bundle.js",
+		"/Users/granthobbs/Developer/simple-plot/node_modules/browserify/test/multi_bundle_unique.js",
+		"/Users/granthobbs/Developer/simple-plot/node_modules/grunt-svgmin/node_modules/svgo/plugins/removeNonInheritableGroupAttrs.js",
+		"/Users/granthobbs/Developer/simple-plot/node_modules/grunt-contrib-less/node_modules/less/test/less/errors/multiple-guards-on-css-selectors.less",
+		"/Users/granthobbs/Developer/simple-plot/node_modules/grunt-svgmin/node_modules/svgo/node_modules/sax/test/buffer-overrun.js",
+		"/Users/granthobbs/Developer/simple-plot/node_modules/grunt-contrib-uglify/node_modules/uglify-js/lib/mozilla-ast.js",
+		"/Users/granthobbs/Developer/simple-plot/node_modules/.bin/mocha",
+		"/Users/granthobbs/Developer/simple-plot/app/scripts/plt.js",
+		"/Users/granthobbs/Developer/simple-plot/app/google-charts.html",
+		"/Users/granthobbs/Developer/simple-plot/app/scripts/app.js",
+		"/Users/granthobbs/Developer/simple-plot/app/bower_components/bootstrap/fonts/glyphicons-halflings-regular.svg",
+		"/Users/granthobbs/Developer/simple-plot/node_modules/grunt/node_modules/js-yaml/node_modules/argparse/lib/argument_parser.js",
+		"/Users/granthobbs/Developer/simple-plot/node_modules/grunt-contrib-clean/AUTHORS",
+		"/Users/granthobbs/Developer/simple-plot/node_modules/grunt-contrib-less/tasks/less.js",
+		"/Users/granthobbs/Developer/simple-plot/node_modules/grunt-contrib-less/node_modules/.bin/lessc",
+		"/Users/granthobbs/Developer/simple-plot/node_modules/grunt-contrib-less/node_modules/less/test/css/lazy-eval.css",
+		"/Users/granthobbs/Developer/simple-plot/node_modules/grunt-autoprefixer/node_modules/autoprefixer/node_modules/caniuse-db/features-json/kerning-pairs-ligatures.json",
+		"/Users/granthobbs/Developer/simple-plot/package.json",
+		"/Users/granthobbs/Developer/simple-plot/app/scripts/plot.js",
+		"/Users/granthobbs/Developer/simple-plot/id3.html",
+		"/Users/granthobbs/Developer/finance-plot/src/scripts/components/FinancePlotApp.jsx",
+		"/Users/granthobbs/Developer/simple-plot/index.html",
+		"/Users/granthobbs/Developer/finance-plot/src/scripts/yahoo-finance-stock-data.js",
+		"/Users/granthobbs/Developer/finance-plot/src/index.html",
+		"/Users/granthobbs/Developer/finance-plot/src/scripts/components/main.jsx",
+		"/Users/granthobbs/Developer/finance-plot/index.html",
+		"/Users/granthobbs/Developer/finance-plot/node_modules/webpack/node_modules/enhanced-resolve/lib/ModulesInDirectoriesPlugin.js",
+		"/Users/granthobbs/Developer/finance-plot/node_modules/react/lib/isNode.js",
+		"/Users/granthobbs/Developer/finance-plot/node_modules/jshint/node_modules/shelljs/src/find.js",
+		"/Users/granthobbs/Developer/finance-plot/node_modules/webpack/lib/optimize/FlagIncludedChunksPlugin.js",
+		"/Users/granthobbs/Developer/finance-plot/node_modules/grunt/lib/grunt/fail.js",
+		"/Users/granthobbs/Developer/CallLogger/tools/disp.py",
+		"/Users/granthobbs/Developer/CallLogger/tools/setDallasDisp1.py",
+		"/Users/granthobbs/Developer/CallLogger/tools/grab/superDncUpdate.py",
+		"/Users/granthobbs/Developer/CallLogger/tools/deraw.py",
+		"/Users/granthobbs/Developer/CallLogger/tools/parse_raw.py",
+		"/Users/granthobbs/Developer/CallLogger/tools/dnc.py",
+		"/Users/granthobbs/Developer/CallLogger/tools/updateDnc.py",
+		"/Users/granthobbs/Developer/CallLogger/tools/grab/csvParse.py",
+		"/Users/granthobbs/Developer/CallLogger/tools/stats.py",
+		"/Users/granthobbs/Google Drive/Premier Wireless/Automation/SFGrabber/Houston/accountParser.py",
+		"/Users/granthobbs/Downloads/react-0.12.1/helloworld.html",
+		"/Users/granthobbs/Developer/react-boilerplate/src/index.js",
+		"/Users/granthobbs/Developer/flux-examples/chat/app.js",
+		"/Users/granthobbs/Developer/flux-examples/routing/app.js",
+		"/Users/granthobbs/Developer/flux-examples/routing/components/Application.jsx",
+		"/Users/granthobbs/Developer/flux-examples/chat/components/MessageComposer.jsx",
+		"/Users/granthobbs/Developer/flux-examples/chat/components/ChatApp.jsx",
+		"/Users/granthobbs/TermKit/Node/nodekit.js",
+		"/Users/granthobbs/Developer/CallLogger/tools/log.py",
+		"/Users/granthobbs/Developer/CallLogger/app.py",
+		"/Users/granthobbs/Developer/CallLogger/templates/blitz.html",
+		"/Users/granthobbs/Developer/CallLogger/templates/account_detail.html",
+		"/Users/granthobbs/Developer/CallLogger/tools/update.sh",
+		"/Users/granthobbs/Developer/CallLogger/templates/layout.html",
+		"/Users/granthobbs/Developer/CallLogger/venv/lib/python2.7/_abcoll.py",
+		"/Users/granthobbs/Developer/CallLogger/venv/lib/python2.7/site-packages/passlib/utils/_blowfish/__init__.py",
+		"/Users/granthobbs/Developer/CallLogger/tools/add_blank_followups.py",
+		"/Users/granthobbs/Developer/CallLogger/venv/lib/python2.7/site-packages/passlib/tests/_test_bad_register.py",
+		"/Users/granthobbs/Developer/CallLogger/templates/account.html",
+		"/Users/granthobbs/Downloads/strain-rate-tensor/camlight.inc",
+		"/Users/granthobbs/Google Drive/Premier Wireless/Notes 12-10",
+		"/Users/granthobbs/Developer/CallLogger/static/bower_components/jquery/src/data/var/data_priv.js",
+		"/Users/granthobbs/Developer/CallLogger/static/bower_components/jquery/src/data/var/data_user.js",
+		"/Users/granthobbs/Developer/CallLogger/venv/include/python2.7/cStringIO.h",
+		"/Users/granthobbs/Developer/CallLogger/CallLogger.sublime-project",
+		"/Users/granthobbs/Downloads/csvParse.py",
+		"/Users/granthobbs/Developer/CallLogger/venv/include/python2.7/rangeobject.h",
+		"/Users/granthobbs/Developer/CallLogger/requirements.txt",
+		"/Users/granthobbs/Downloads/surface3d_demo.py",
+		"/Users/granthobbs/Google Drive/Premier Wireless/Automation Scripts/SFGrabber/dnc.py",
+		"/Users/granthobbs/Google Drive/Premier Wireless/Automation Scripts/SFGrabber/augmenter.py",
+		"/Users/granthobbs/Downloads/wire3d_demo.py",
+		"/Users/granthobbs/Google Drive/Premier Wireless/Automation Scripts/SFGrabber/Dallas/add_defunct.py",
+		"/Users/granthobbs/Google Drive/Premier Wireless/Automation Scripts/SFGrabber/Dallas/grabber.py",
+		"/Users/granthobbs/Google Drive/Premier Wireless/Automation Scripts/SFGrabber/Dallas/id_grabber.py",
+		"/Users/granthobbs/Downloads/polymer-tutorial-master/finished/index.html",
+		"/Users/granthobbs/Downloads/polymer-tutorial-master/starter/index.html",
+		"/Users/granthobbs/Google Drive/Premier Wireless/Automation Scripts/SFGrabber/Houston/grabber.py",
+		"/Users/granthobbs/Google Drive/Premier Wireless/Automation Scripts/SFGrabber/Dallas/grabber2.py",
+		"/Users/granthobbs/Developer/CallLogger/Procfile",
+		"/Users/granthobbs/Developer/CallLogger/tools/process_hotel_accounts.py",
+		"/Users/granthobbs/Developer/CallLogger/tools/load_hotel_accounts.py",
+		"/Users/granthobbs/Developer/CallLogger/tools/collect_call_history.py",
+		"/Users/granthobbs/Developer/CallLogger/venv/lib/python2.7/site-packages/flask_user/templates/flask_user/reset_password.html",
+		"/Users/granthobbs/Developer/CallLogger/venv/lib/python2.7/site-packages/passlib/tests/test_handlers.py",
+		"/Users/granthobbs/Developer/CallLogger/venv/lib/python2.7/site-packages/pymongo/thread_util.py",
+		"/Users/granthobbs/Developer/CallLogger/venv/include/python2.7/timefuncs.h",
+		"/Users/granthobbs/Google Drive/Premier Wireless/Automation Scripts/SFGrabber/Dallas/accountParser.py",
+		"/Users/granthobbs/Developer/CallLogger/templates/ihg_account_detail.html",
+		"/Users/granthobbs/Developer/CallLogger/templates/history.html",
+		"/Users/granthobbs/Developer/CallLogger/tools/add_account_names_to_calls.py",
+		"/Users/granthobbs/Developer/CallLogger/templates/account_list.html"
+	],
+	"find":
+	{
+		"height": 35.0
+	},
+	"find_in_files":
+	{
+		"height": 93.0,
+		"where_history":
+		[
+			"",
+			"place_id",
+			""
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"trendlineY",
+			"domain",
+			"make",
+			"xAxis",
+			"xaxis",
+			".tmp/scripts/app",
+			"main.js",
+			".js",
+			"js",
+			":js",
+			"usemin",
+			"modernizr",
+			"node_env",
+			"uglify",
+			"browserify",
+			"concat",
+			"mocha",
+			"useminPrepare",
+			"uglify",
+			"useminPrepare",
+			"copy",
+			"browserify",
+			"uglify",
+			"cssmin",
+			"concat",
+			"browserify",
+			"console.log",
+			".text",
+			"'translate",
+			"line",
+			"tick",
+			"require(",
+			".tmp",
+			"less",
+			"browserify",
+			"concat",
+			"concat'",
+			"concat",
+			"usemin",
+			"grunt.initConfig",
+			"loadNpm",
+			"modernizr",
+			"moderniz",
+			"modern",
+			"moderniz",
+			"color",
+			"svg.selectAll",
+			".data",
+			"color",
+			".append",
+			"attr",
+			"attr('fill'",
+			"fill",
+			"d[0].Close",
+			"xseries",
+			"var x",
+			"return d",
+			"'r'",
+			".length",
+			"axis",
+			"transition(",
+			".transition",
+			"group",
+			"tooltip",
+			"quotes",
+			"console.log",
+			"tooltip",
+			".Date",
+			"'date",
+			"bower_components",
+			"styles: ",
+			"input.slider",
+			"css",
+			"less",
+			".text",
+			"lotTrendline",
+			"trendline",
+			".High",
+			".high",
+			"serve",
+			"less:dist",
+			"showPlot",
+			"handlesubmit",
+			"x[",
+			"x{",
+			"[2]",
+			"'date'",
+			"tooltip",
+			"indexOf",
+			"console.log",
+			"less:",
+			"less",
+			"less.server",
+			"script",
+			"browserify",
+			"connect",
+			"lastpoint",
+			"lastPoint",
+			"Finance",
+			"console",
+			":",
+			"\"AO\"",
+			"pwd",
+			"threshold",
+			"build_",
+			"query",
+			"blitz",
+			"dnc",
+			"eligible",
+			"wiat",
+			"&key&sensor",
+			"&key",
+			"log_call",
+			"call",
+			"list",
+			"\"post\"",
+			"today",
+			"datetime(n now",
+			"import datetime",
+			"datetime",
+			"cdo",
+			"threshold",
+			"disp",
+			"logged",
+			"followup",
+			"history = ",
+			"specificaccount",
+			"active_page"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+			".Close",
+			"a.account.",
+			"a.",
+			"q.",
+			"images/",
+			"place_id",
+			"",
+			"@dark-gray",
+			"@dark-purple",
+			"@light-purple"
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"selected": 1,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "/Users/granthobbs/Developer/qplot/app/index.html",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 866,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								866,
+								866
+							]
+						],
+						"settings":
+						{
+							"annotations":
+							[
+								"TODO",
+								"README",
+								"FIXME"
+							],
+							"csslint_options":
+							{
+								"adjoining-classes": "warning",
+								"box-model": true,
+								"box-sizing": "warning",
+								"compatible-vendor-prefixes": "warning",
+								"display-property-grouping": true,
+								"duplicate-background-images": "warning",
+								"duplicate-properties": true,
+								"empty-rules": true,
+								"errors": true,
+								"fallback-colors": "warning",
+								"floats": "warning",
+								"font-faces": "warning",
+								"font-sizes": "warning",
+								"gradients": "warning",
+								"ids": "warning",
+								"import": "warning",
+								"important": "warning",
+								"known-properties": true,
+								"outline-none": "warning",
+								"overqualified-elements": "warning",
+								"qualified-headings": "warning",
+								"regex-selectors": "warning",
+								"rules-count": "warning",
+								"shorthand": "warning",
+								"star-property-hack": "warning",
+								"text-indent": "warning",
+								"underscore-property-hack": "warning",
+								"unique-headings": "warning",
+								"universal-selector": "warning",
+								"vendor-prefix": true,
+								"zero-units": "warning"
+							},
+							"gjslint_ignore":
+							[
+								110
+							],
+							"gjslint_options":
+							[
+							],
+							"incomplete_sync": null,
+							"javascript_linter": "jshint",
+							"jshint_options":
+							{
+								"browser": true,
+								"evil": true,
+								"regexdash": true,
+								"sub": true,
+								"trailing": true,
+								"wsh": true
+							},
+							"pep8": true,
+							"pep8_ignore":
+							[
+								"E501"
+							],
+							"perl_linter": "perlcritic",
+							"pyflakes_ignore":
+							[
+							],
+							"pyflakes_ignore_import_*": true,
+							"remote_loading": false,
+							"sublimelinter": true,
+							"sublimelinter_delay": 2,
+							"sublimelinter_disable":
+							[
+							],
+							"sublimelinter_executable_map":
+							{
+							},
+							"sublimelinter_fill_outlines": false,
+							"sublimelinter_gutter_marks": true,
+							"sublimelinter_gutter_marks_theme": "simple",
+							"sublimelinter_mark_style": "none",
+							"sublimelinter_notes": false,
+							"sublimelinter_objj_check_ascii": false,
+							"sublimelinter_popup_errors_on_save": false,
+							"sublimelinter_syntax_map":
+							{
+								"C++": "c",
+								"Python Django": "python",
+								"Ruby on Rails": "ruby"
+							},
+							"sublimelinter_wrap_find": true,
+							"synced": false,
+							"syntax": "Packages/HTML/HTML.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "main.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 8770,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								8607,
+								8607
+							]
+						],
+						"settings":
+						{
+							"annotations":
+							[
+								"TODO",
+								"README",
+								"FIXME"
+							],
+							"csslint_options":
+							{
+								"adjoining-classes": "warning",
+								"box-model": true,
+								"box-sizing": "warning",
+								"compatible-vendor-prefixes": "warning",
+								"display-property-grouping": true,
+								"duplicate-background-images": "warning",
+								"duplicate-properties": true,
+								"empty-rules": true,
+								"errors": true,
+								"fallback-colors": "warning",
+								"floats": "warning",
+								"font-faces": "warning",
+								"font-sizes": "warning",
+								"gradients": "warning",
+								"ids": "warning",
+								"import": "warning",
+								"important": "warning",
+								"known-properties": true,
+								"outline-none": "warning",
+								"overqualified-elements": "warning",
+								"qualified-headings": "warning",
+								"regex-selectors": "warning",
+								"rules-count": "warning",
+								"shorthand": "warning",
+								"star-property-hack": "warning",
+								"text-indent": "warning",
+								"underscore-property-hack": "warning",
+								"unique-headings": "warning",
+								"universal-selector": "warning",
+								"vendor-prefix": true,
+								"zero-units": "warning"
+							},
+							"gjslint_ignore":
+							[
+								110
+							],
+							"gjslint_options":
+							[
+							],
+							"incomplete_sync": null,
+							"javascript_linter": "jshint",
+							"jshint_options":
+							{
+								"browser": true,
+								"evil": true,
+								"regexdash": true,
+								"sub": true,
+								"trailing": true,
+								"wsh": true
+							},
+							"pep8": true,
+							"pep8_ignore":
+							[
+								"E501"
+							],
+							"perl_linter": "perlcritic",
+							"pyflakes_ignore":
+							[
+							],
+							"pyflakes_ignore_import_*": true,
+							"remote_loading": false,
+							"sublimelinter": true,
+							"sublimelinter_delay": 2,
+							"sublimelinter_disable":
+							[
+							],
+							"sublimelinter_executable_map":
+							{
+							},
+							"sublimelinter_fill_outlines": false,
+							"sublimelinter_gutter_marks": true,
+							"sublimelinter_gutter_marks_theme": "simple",
+							"sublimelinter_mark_style": "none",
+							"sublimelinter_notes": false,
+							"sublimelinter_objj_check_ascii": false,
+							"sublimelinter_popup_errors_on_save": false,
+							"sublimelinter_syntax_map":
+							{
+								"C++": "c",
+								"Python Django": "python",
+								"Ruby on Rails": "ruby"
+							},
+							"sublimelinter_wrap_find": true,
+							"synced": false,
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 25.0
+	},
+	"input":
+	{
+		"height": 33.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.ArduRoast":
+	{
+		"height": 112.0
+	},
+	"output.exec":
+	{
+		"height": 112.0
+	},
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"output.max31855_4ch_spi_example":
+	{
+		"height": 112.0
+	},
+	"output.sftp":
+	{
+		"height": 112.0
+	},
+	"output.stino_log":
+	{
+		"height": 112.0
+	},
+	"project": "qplot.sublime-project",
+	"replace":
+	{
+		"height": 46.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+			[
+				"index",
+				"~/Developer/qplot/app/index.html"
+			],
+			[
+				"gruntfile",
+				"Gruntfile.js"
+			],
+			[
+				"index.h",
+				"app/index.html"
+			],
+			[
+				"main.js",
+				"app/scripts/main.js"
+			],
+			[
+				"grunt",
+				"Gruntfile.js"
+			],
+			[
+				"yahoo-finance",
+				"yahoo-finance-stock-data.js"
+			],
+			[
+				"yahoo",
+				"app/scripts/yahoo-finance-stock-data.js"
+			],
+			[
+				"main",
+				"app/scripts/main.js"
+			],
+			[
+				"app.less",
+				"app/less/app.less"
+			],
+			[
+				"index.html",
+				"app/index.html"
+			],
+			[
+				"load-grung",
+				"node_modules/load-grunt-tasks/load-grunt-tasks.js"
+			],
+			[
+				"vendor.js",
+				".tmp/scripts/vendor.js"
+			],
+			[
+				"yahoo-finance-sto",
+				"app/scripts/yahoo-finance-stock-data.js"
+			],
+			[
+				"bower.json",
+				"bower.json"
+			],
+			[
+				"bower",
+				"bower.json"
+			],
+			[
+				"bower.j",
+				"bower.json"
+			],
+			[
+				"gruntfil",
+				"Gruntfile.js"
+			],
+			[
+				"app.l",
+				"app/less/app.less"
+			],
+			[
+				"app.",
+				"app/less/app.less"
+			],
+			[
+				"plt",
+				"app/scripts/plt.js"
+			],
+			[
+				"yahoo-f",
+				"src/scripts/yahoo-finance-stock-data.js"
+			],
+			[
+				"financeplot",
+				"src/scripts/components/FinancePlotApp.jsx"
+			],
+			[
+				"disp",
+				"tools/disp.py"
+			],
+			[
+				"log.py",
+				"tools/log.py"
+			],
+			[
+				"disp.py",
+				"tools/disp.py"
+			],
+			[
+				"update.sh",
+				"tools/update.sh"
+			],
+			[
+				"_detail",
+				"templates/account_detail.html"
+			],
+			[
+				"blitz.h",
+				"templates/blitz.html"
+			],
+			[
+				"layout",
+				"templates/layout.html"
+			],
+			[
+				"blitz",
+				"templates/blitz.html"
+			],
+			[
+				"ap",
+				"app.py"
+			],
+			[
+				"csvp",
+				"tools/grab/csvParse.py"
+			],
+			[
+				"raw",
+				"tools/parse_raw.py"
+			],
+			[
+				"app",
+				"app.py"
+			],
+			[
+				"app.py",
+				"app.py"
+			],
+			[
+				"update",
+				"tools/update.sh"
+			],
+			[
+				"load_hote",
+				"tools/load_hotel_accounts.py"
+			],
+			[
+				"account_detail",
+				"templates/account_detail.html"
+			],
+			[
+				"history",
+				"templates/history.html"
+			],
+			[
+				"_list",
+				"templates/account_list.html"
+			],
+			[
+				"histo",
+				"templates/history.html"
+			],
+			[
+				"history.h",
+				"templates/history.html"
+			],
+			[
+				"add",
+				"tools/add_account_names_to_calls.py"
+			],
+			[
+				"lay",
+				"templates/layout.html"
+			],
+			[
+				"account",
+				"templates/account_list.html"
+			],
+			[
+				"detail",
+				"templates/account_detail.html"
+			],
+			[
+				"fix",
+				"tools/fix_call_time.py"
+			],
+			[
+				"account_list",
+				"templates/account_list.html"
+			],
+			[
+				"layou",
+				"templates/layout.html"
+			],
+			[
+				"app.p",
+				"app.py"
+			],
+			[
+				"call",
+				"CallLogger.sublime-project"
+			],
+			[
+				"etail",
+				"templates/account_detail.html"
+			],
+			[
+				"log.",
+				"tools/log.py"
+			],
+			[
+				".sh",
+				"tools/update.sh"
+			],
+			[
+				"log",
+				"tools/log.py"
+			],
+			[
+				"account_deta",
+				"templates/account_detail.html"
+			],
+			[
+				"account_d",
+				"templates/account_detail.html"
+			],
+			[
+				"no_",
+				"templates/no_account.html"
+			],
+			[
+				"account_det",
+				"templates/account_detail.html"
+			],
+			[
+				"accounts",
+				"templates/accounts.html"
+			],
+			[
+				"accou",
+				"templates/account.html"
+			],
+			[
+				"a",
+				"templates/account.html"
+			],
+			[
+				"hel",
+				"helloworld.py"
+			],
+			[
+				"yam",
+				"app.yaml"
+			],
+			[
+				"hell",
+				"helloworld.py"
+			],
+			[
+				"hello",
+				"helloworld.py"
+			]
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 500.0,
+		"selected_items":
+		[
+			[
+				"",
+				"~/Developer/CallLogger/CallLogger.sublime-project"
+			],
+			[
+				"call",
+				"~/Developer/CallLogger/CallLogger.sublime-project"
+			]
+		],
+		"width": 380.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": false,
+	"side_bar_width": 195.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}

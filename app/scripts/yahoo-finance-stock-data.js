@@ -52,7 +52,7 @@ v2013-08-05
     function getStockQF(opts, type, complete) {
         var defs = {
             desc: false,
-            baseURL: 'http://www.quandl.com/api/v1/datasets/CHRIS/CME_',
+            baseURL: 'http://www.quandl.com/api/v1/datasets/',
             query: {
                 quotes: 'not implemented',
                 historicaldata: '{stock}.json?trim_start={startDate}'
@@ -71,7 +71,7 @@ v2013-08-05
         }
 
         var query = defs.query[type]
-        .replace('{stock}', opts.stock.substring(3,opts.stock.length))
+        .replace('{stock}', opts.stock)
         .replace('{startDate}', opts.startDate)
 
         var url = defs.baseURL + query + (defs.suffixURL[type] || '');
@@ -88,12 +88,13 @@ v2013-08-05
     function getStocks(list_opts, type, complete) {
         // figure out how many requests are neccessary and make a container for the results
         var remaining = list_opts.stocks.length;
-        var results = [];
+        var stocks = list_opts.stocks;
+        var results = [ null, null ];
         // retrieve data for each stock asynchronously, then combine when finished
         list_opts.stocks.forEach(function(stock) {
             opts = list_opts;
             opts['stock'] = stock; // this is the stock symbol we will be feeding into getStock()
-            if (stock.indexOf('QF.') > -1) {
+            if (stock.indexOf('/') > -1) {
                 getStockQF(opts, type, function(err, data) {
                     remaining -= 1;
                     data['quote'] = []
@@ -108,7 +109,7 @@ v2013-08-05
                         d['Symbol'] = data['code'];
                         data['quote'].push(d);
                     });
-                    results.push(data);
+                    results[stocks.indexOf(stock)] = data;
                     if (remaining == 0) {
                         complete(null, results);
                     }
@@ -116,7 +117,7 @@ v2013-08-05
             } else {
                 getStock(opts, type, function(err, data) {
                     remaining -= 1;
-                    results.push(data);
+                    results[stocks.indexOf(stock)] = data;
                     // check if finshed fetching
                     if (remaining == 0) {
                         complete(null, results);
