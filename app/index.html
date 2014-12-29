@@ -16,8 +16,9 @@
 		<input class="form-control input dark" type="text" id="s2" placeholder="Symbol 2 (Dep.)" value="PBT" />
 		<div class="input-group">
 			<input type="text" id="months_ago" class="form-control input dark" value="3" />
-			<span class="input-group-addon">month</span>
+			<span class="input-group-addon">month(s) prior to</span>
 		</div>
+		<input class="form-control input dark" type="text" id="d2" placeholder="Until Date" data-provide="datepicker" data-date-format="yyyy-mm-dd" data-date-autoclose="true"/>
 		<input class="form-control btn btn-primary" type="submit" />
 	</form>
 	<div id="plot"></div>
@@ -25,5 +26,9 @@
 
 <!-- <script src="scripts/vendor.js"></script>
  --><script src="scripts/main.js"></script>
+<!-- build:js({.tmp,app}) scripts/vendor.js -->
+ <script src="bower_components/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
+ <!-- endbuild -->
+
 
 </html>

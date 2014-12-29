@@ -322,10 +322,13 @@ function showPlot(data) {
 
 var moment = require('moment');
 
+$('input#d2').val(moment().format('YYYY-MM-DD'));
+
 function getDateRange() {
 	var monthsAgo = $('input#months_ago').val();
-	var d2 = moment().format('YYYY-MM-DD');
-	var d1 = moment().subtract(parseInt(monthsAgo), 'months').format('YYYY-MM-DD');
+	var d2 = $('input#d2').val();
+	var d1 = moment(d2, 'YYYY-MM-DD').subtract(parseInt(monthsAgo), 'months').format('YYYY-MM-DD');
+	console.log({ start: d1, end: d2 });
 	return { start: d1, end: d2 };
 }
 
