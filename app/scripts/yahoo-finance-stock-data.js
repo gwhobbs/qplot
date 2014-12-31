@@ -45,7 +45,8 @@ v2013-08-05
             if (!data || !data.query) {
                 err = true;
             }
-            complete(err, !err && data.query.results);    });
+
+            complete(err, !err && data.query.results, opts.stock);    });
     }
     window.getStock = getStock;
 
@@ -81,7 +82,7 @@ v2013-08-05
                 console.log('error');
                 err = true;
             }
-            complete(err, !err && data);    });
+            complete(err, !err && data, opts.stock);    });
     }
     window.getStockQF = getStockQF;
 
@@ -90,13 +91,21 @@ v2013-08-05
         var remaining = list_opts.stocks.length;
         var stocks = list_opts.stocks;
         var results = [ null, null ];
+        $('.progress-status').text(('Pulling data from ' + remaining + ' sources...').toUpperCase());
+        $('.progress-bar').animate({width: '30%'},100);
         // retrieve data for each stock asynchronously, then combine when finished
         list_opts.stocks.forEach(function(stock) {
             opts = list_opts;
             opts['stock'] = stock; // this is the stock symbol we will be feeding into getStock()
             if (stock.indexOf('/') > -1) {
-                getStockQF(opts, type, function(err, data) {
+                getStockQF(opts, type, function(err, data, query) {
                     remaining -= 1;
+                    if (remaining == 1) {
+                        $('.progress-status').text('WAITING FOR ONE MORE CRITICAL PIECE OF DATA...');
+                        $('.progress-bar').animate({width: '60%'},100);
+                    } else {
+                        $('.progress.status').text('INTERPRETING RESULTS...');
+                    }
                     data['quote'] = []
                     var colNames = data.column_names;
                     data['data'].forEach(function(day) {
@@ -115,8 +124,14 @@ v2013-08-05
                     }
                 });
             } else {
-                getStock(opts, type, function(err, data) {
+                getStock(opts, type, function(err, data, query) {
                     remaining -= 1;
+                    if (remaining == 1) {
+                        $('.progress-status').text('WAITING FOR ONE MORE CRITICAL PIECE OF DATA...');
+                        $('.progress-bar').animate({width: '60%'},100);
+                    } else {
+                        $('.progress.status').text('INTERPRETING RESULTS...');
+                    }
                     results[stocks.indexOf(stock)] = data;
                     // check if finshed fetching
                     if (remaining == 0) {
@@ -132,6 +147,12 @@ v2013-08-05
         getStocks(list_opts, type, function(err, data) {
             quotes = [];
             dates = [];
+            dateList = {};
+            $('.progress-status').text('INTERPRETING RESULTS...');
+            $('.progress-bar').animate({width: '100%'},100);
+            $('#loading').animate({opacity: '0'},100);
+            $('.progress-bar').animate({width: '0%'},100);
+
             data[0].quote.forEach(function(day) {
                 dates.push(day['Date']);
             });

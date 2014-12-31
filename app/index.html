@@ -11,6 +11,7 @@
 
 </head>
 <body>
+
 	<form id="req_form" class="form-inline">
 		<input class="form-control input dark" type="text" id="s1" placeholder="Symbol 1 (Ind.)" value="CHRIS/CME_CL1" />
 		<input class="form-control input dark" type="text" id="s2" placeholder="Symbol 2 (Dep.)" value="PBT" />
@@ -21,6 +22,16 @@
 		<input class="form-control input dark" type="text" id="d2" placeholder="Until Date" data-provide="datepicker" data-date-format="yyyy-mm-dd" data-date-autoclose="true"/>
 		<input class="form-control btn btn-primary" type="submit" />
 	</form>
+	<div id="loading">
+		<div class="progress progress-dark progress-slim">
+			<div class="progress-bar" role="progressbar" aria-valuenow="60" aria=valuemin="0" aria-valuemax="100" style="width: 0%;">
+				<span class="sr-only">60% Complete</span>
+			</div>
+		</div>
+		<div class="progress-status">
+			FETCHING DATA...
+		</div>
+	</div>
 	<div id="plot"></div>
 </body>
 

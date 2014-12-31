@@ -51,33 +51,6 @@
 	},
 	"buffers":
 	[
-		{
-			"file": "/Users/granthobbs/Developer/qplot/app/index.html",
-			"settings":
-			{
-				"buffer_size": 887,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"contents": "/**\n * scripts/main.js\n *\n * This is the starting point for your application.\n * Take a look at http://browserify.org/ for more info\n */\n\n'use strict';\n\nvar App = require('./app.js');\nrequire('./yahoo-finance-stock-data.js');\nvar d3 = require('d3-browserify');\n\n\nvar stocks = ['MSFT', 'AAPL']; // defaults for testing\n\n\n\n\nfunction showPlot(data) {\n	$('#plot').empty();\n\n	// add some margins around the graph\n	var margins = {\n		'left' : 70,\n		'right' : 30,\n		'top' : 30,\n		'bottom' : 50\n	};\n\n	var width = $(document).width();\n	var height = $(document).height() - 100; // height of title bar\n\n	// this will be the color scale for the dots, oldest being blue, newest being red\n	var colors = d3.scale.linear()\n		.domain([0,data.length])\n		.interpolate(d3.interpolateHsl)\n		.range(['#ff0000', '#0000ff']);\n\n	// add the SVG component #plot\n	var svg = d3.select('#plot')\n		.append('svg').attr('width', width).attr('height', height)\n		.append('g').attr('transform', 'translate(' + margins.left + ',' + margins.top + ')');\n\n	// build the x and y domain and range\n	var x = d3.scale.linear()\n		.domain(d3.extent(data, function (d) {\n			return parseFloat(d[0].Close);\n		}))\n		.range([0, width - margins.left - margins.right]);\n\n	var y = d3.scale.linear()\n		.domain(d3.extent(data, function (d) {\n			return parseFloat(d[1].Close);\n		}))\n		.range([height - margins.top - margins.bottom, 0]);\n\n	// functions to produces the axes\n	function xAxis() {\n		return d3.svg.axis()\n			.scale(x)\n			.orient('bottom')\n			.tickPadding(2);\n	}\n\n	function yAxis() {\n		return d3.svg.axis()\n			.scale(y)\n			.orient('left')\n			.tickPadding(2);\n	}\n\n	// make background grid\n	svg.append('g')\n		.attr('class', 'grid')\n		.attr('transform', 'translate(0,' + height + ')')\n		.call(xAxis()\n			.tickSize(-height, 0, -margins.bottom - 30)\n			.tickFormat('')\n		);\n\n	svg.append('g')\n		.attr('class', 'grid')\n		.call(yAxis()\n			.tickSize(-width, 0, 0)\n			.tickFormat('')\n		);\n\n	// draw x and y axes\n	svg.append('g').attr('class', 'x axis').attr('transform', 'translate(0,' + y.range()[0] + ')');\n	svg.append('g').attr('class', 'y axis');\n\n	svg.selectAll('g.y.axis').call(yAxis());\n	svg.selectAll('g.x.axis').call(xAxis());\n\n	// draw axes names\n	svg.append('text')\n		.attr('fill', '#555')\n		.attr('class', 'label')\n		.attr('text-anchor', 'end')\n		.attr('x', width / 2)\n		.attr('y', height - 35)\n		.text(data[0][0].Symbol);\n\n	svg.append('text')\n		.attr('fill', '#555')\n		.attr('class', 'label')\n		.attr('transform', 'rotate(-90)')\n		.attr('y', -50)\n		.attr('x', - (height / 2))\n		.attr('dy', '.71em')\n		.text(data[0][1].Symbol);\n\n\n	var tooltip = d3.select('body').append('div')\n		.attr('class', 'tooltip')\n		.style('opacity',0);\n\n	\n\n\n\n\n\n	// figure out least squares regression\n	var xSeries = data.map(function(d) { return parseFloat(d[0].Close)});\n	var ySeries = data.map(function(d) { return parseFloat(d[1].Close)});\n\n	var leastSquaresCoeff = leastSquares(xSeries, ySeries);\n\n	// print r squared\n	svg.append('text')\n		.attr('class', 'label')\n		.attr('x', width - 200)\n		.attr('y', height - 35)\n		.text('r squared: ' + leastSquaresCoeff[2].toFixed(2).toString());\n\n	// print slope\n	svg.append('text')\n		.attr('class', 'label')\n		.attr('x', width - 200)\n		.attr('y', height - 45)\n		.text('slope: ' + leastSquaresCoeff[0].toFixed(2).toString());\n\n	// add curves\n	var lineFunction = d3.svg.line()\n		.x(function(d) { return parseFloat(x(d[0].Close)); })\n		.y(function(d) { return parseFloat(y(d[1].Close)); })\n		.interpolate('cardinal');\n\n	var pathline = svg.selectAll('.' + 'pathline')\n		.data(data);\n\n	// make the plot visible\n	$('#plot').animate({opacity:1});\n\n	plotTrendline(leastSquaresCoeff, 'trendline', '#888', 2);\n\n	var sd = standardDeviation(data);\n\n	// plot a trendline 1 standard deivation up\n	var coeffSdTop = leastSquaresCoeff;\n	coeffSdTop[1] += sd;\n	plotTrendline(coeffSdTop, 'sdline', '#555', 1);\n\n	// plot a trendline 1 standard deviation down\n	var coeffSdBottom = leastSquaresCoeff;\n	coeffSdBottom[1] -= 2 * sd;\n	plotTrendline(coeffSdBottom, 'sdline2', '#555', 1);\n\n	\n	var day = svg.selectAll('g.node').data(data, function (d) {\n		return d[2]; // this is the date string and will let d3 know the uniqueness of the item\n	});\n\n	var dayGroup = day.enter().append('g').attr('class', 'node')\n		.attr('transform', function(d) {\n			return 'translate(' + x(d[0].Close) + ',' + y(d[1].Close) + ')';\n		});\n\n	var monthsAgo = parseInt($('input#months_ago').val());\n	\n	// draw circles\n	dayGroup.append('circle')\n		.attr('r',0)\n		.attr('class', 'dot')\n		.style('fill', function(d) {\n			return colors(data.indexOf(d));\n		})\n		.on('mouseover', function(d) {\n			tooltip.transition()\n				.duration(200)\n				.style('opacity', .9);\n			tooltip.html('<b>'+ moment(d[2],'YYYY-MM-DD').format('LL')+'</b>' + '<br/>' + d[0].Symbol + ': ' + d[0].Close + '<br />' +d[1].Symbol + ': ' + d[1].Close)\n				.style('left', (d3.event.pageX + 5) + 'px')\n				.style('top', (d3.event.pageY - 28) + 'px');\n		})\n		.on('mouseout', function(d) {\n			tooltip.transition()\n				.duration(500)\n				.style('opacity',0);\n		})\n		.transition()\n		.attr('r', function(d) {\n			if (data.indexOf(d) == 0 ) {\n				var that = this;\n				setInterval(function(){d3.select(that).attr('r',12).transition().duration(300).attr('r',10)},1000);\n				return 10;\n			} else {\n				return 5;\n			}\n		}).duration(200).delay(function(d) {\n			return (data.length - data.indexOf(d)) * (5/monthsAgo*3);\n		});\n\n		// some plotting functions\n\n		function plotTrendline(leastSquaresCoeff, cssClass, color, width) {\n		var x1 = d3.min(xSeries);\n		var y1 = trendlineY(d3.min(xSeries));\n\n		if ( y1 < d3.min(ySeries) ) {\n			y1 = d3.min(ySeries);\n			x1 = trendlineX(y1);\n		} else if ( y1 > d3.max(ySeries) ) {\n			y1 = d3.max(ySeries);\n			x1 = trendlineX(y1);\n		}\n\n		var x2 = d3.max(xSeries);\n		var y2 = trendlineY(d3.max(xSeries));\n\n		if (y2 > d3.max(ySeries)) {\n			y2 = d3.max(ySeries);\n			x2 = trendlineX(y2);\n		} else if (y2 < d3.min(ySeries) ) {\n			y2 = d3.min(ySeries);\n			x2 = trendlineX(y2);\n		}\n\n		var trendData = [[x1, y1, x2, y2]];\n		var trendline = svg.selectAll('.' + cssClass)\n			.data(trendData);\n\n		trendline.enter()\n			.append('line')\n			.attr('class', cssClass)\n			.attr('x1', function(d) {return x(d[0]);})\n			.attr('y1', function(d) {return y(d[1]);})\n			.attr('x2', function(d) {return x(d[2]);})\n			.attr('y2', function(d) {return y(d[3]);})\n			.attr('stroke-dasharray', '10,10')\n			.attr('stroke', color)\n			.attr('stroke-width', width)\n			.attr('opacity',0) // start at 0 opacity, and fade in\n			.transition()\n			.attr('opacity',1)\n			.duration(1000);\n	}\n\n	function trendlineY(xVal) {\n		return leastSquaresCoeff[0]*xVal + leastSquaresCoeff[1];\n	}\n\n	function trendlineX(yVal) {\n		return (yVal - leastSquaresCoeff[1]) / leastSquaresCoeff[0];\n	}\n\n	// figure out the standard deviation\n	function standardDeviation(data){\n		var squareDiffs = data.map(function(day){\n			var diff = day[1].Close - trendlineY(day[0].Close);\n			var sqrDiff = diff * diff;\n			return sqrDiff;\n		});\n	  \n	  var avgSquareDiff = average(squareDiffs);\n	 \n	  var stdDev = Math.sqrt(avgSquareDiff);\n	  return stdDev;\n	}\n	 \n	function average(data){\n	  var sum = data.reduce(function(sum, value){\n	    return sum + value;\n	  }, 0);\n	 \n	  var avg = sum / data.length;\n	  return avg;\n	}\n\n}\n\n\n\n\n// returns slope, intercept and r-square of the line\n	function leastSquares(xSeries, ySeries) {\n		var reduceSumFunc = function(prev, cur) { return prev + cur; };\n		\n		var xBar = xSeries.reduce(reduceSumFunc) * 1.0 / xSeries.length;\n		var yBar = ySeries.reduce(reduceSumFunc) * 1.0 / ySeries.length;\n\n		var ssXX = xSeries.map(function(d) { return Math.pow(d - xBar, 2); })\n			.reduce(reduceSumFunc);\n		\n		var ssYY = ySeries.map(function(d) { return Math.pow(d - yBar, 2); })\n			.reduce(reduceSumFunc);\n			\n		var ssXY = xSeries.map(function(d, i) { return (d - xBar) * (ySeries[i] - yBar); })\n			.reduce(reduceSumFunc);\n			\n		var slope = ssXY / ssXX;\n		var intercept = yBar - (xBar * slope);\n		var rSquare = Math.pow(ssXY, 2) / (ssXX * ssYY);\n		\n		return [slope, intercept, rSquare];\n	}\n\nvar moment = require('moment');\n\nfunction getDateRange() {\n	var monthsAgo = $('input#months_ago').val();\n	var d2 = moment().format('YYYY-MM-DD');\n	var d1 = moment().subtract(parseInt(monthsAgo), 'months').format('YYYY-MM-DD');\n	return { start: d1, end: d2 };\n}\n\n// on page load, retrieve initial stock data\ngetStocksSortedByDay({ stocks: [$('#s1').val(), $('#s2').val()], startDate: getDateRange().start, endDate: getDateRange().end }, 'historicaldata', function(err, data) {\n	showPlot(data);\n});\n\nfunction handleSubmit() {\n	// fade out existing chart\n	$('#plot').animate({opacity:0},300);\n\n	// retrieve the data, and call showPlot() when complete\n	getStocksSortedByDay({ stocks: [$('#s1').val(), $('#s2').val()], startDate: getDateRange().start, endDate: getDateRange().end }, 'historicaldata', function(err, data) {\n		showPlot(data);\n	});\n}\n\nvar form = $('#req_form').submit(function(e) {\n	e.preventDefault();\n	handleSubmit();\n});\n\n",
-			"file": "main.js",
-			"file_size": 8977,
-			"file_write_time": 130640898150000000,
-			"settings":
-			{
-				"buffer_size": 8975,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "yahoo-finance-stock-data.js",
-			"settings":
-			{
-				"buffer_size": 6843,
-				"line_ending": "Unix"
-			}
-		}
 	],
 	"build_system": "",
 	"command_palette":
@@ -165,8 +138,26 @@
 	],
 	"file_history":
 	[
-		"/Users/granthobbs/Developer/qplot/node_modules/debowerify/node_modules/bower/node_modules/mout/lang/isNull.js",
+		"/Users/granthobbs/Developer/qplot/app/less/app.less",
+		"/Users/granthobbs/Developer/qplot/app/index.html",
 		"/Users/granthobbs/Developer/qplot/Gruntfile.js",
+		"/Users/granthobbs/Developer/qplot/app/scripts/main.js",
+		"/Users/granthobbs/Developer/qplot/app/scripts/yahoo-finance-stock-data.js",
+		"/Users/granthobbs/Developer/qplot/node_modules/grunt-contrib-less/tasks/less.js",
+		"/Users/granthobbs/Developer/qplot/node_modules/grunt-contrib-less/node_modules/.bin/lessc",
+		"/Users/granthobbs/Developer/qplot/node_modules/grunt-contrib-less/node_modules/less/test/css/lazy-eval.css",
+		"/Users/granthobbs/Developer/qplot/node_modules/backbone/LICENSE",
+		"/Users/granthobbs/Developer/qplot/node_modules/grunt-contrib-less/node_modules/less/.grunt/grunt-contrib-jasmine/phantom-polyfill.js",
+		"/Users/granthobbs/Developer/qplot/node_modules/grunt-contrib-less/node_modules/less/dist/less-1.4.0-beta.js",
+		"/Users/granthobbs/Developer/qplot/node_modules/debowerify/node_modules/bower/node_modules/mout/lang/isNull.js",
+		"/Users/granthobbs/Developer/qplot/package.json",
+		"/Users/granthobbs/Developer/qplot/node_modules/grunt-contrib-jshint/node_modules/jshint/node_modules/htmlparser2/lib/ProxyHandler.js",
+		"/Users/granthobbs/Developer/qplot/app/bower_components/bootstrap-datepicker/Gruntfile.js",
+		"/Users/granthobbs/Developer/qplot/node_modules/debowerify/node_modules/bower/node_modules/mout/math/isNear.js",
+		"/Users/granthobbs/Developer/qplot/node_modules/spin/dist/spin.min.js",
+		"/Users/granthobbs/Developer/qplot/main.js",
+		"/Users/granthobbs/Developer/qplot/node_modules/jquery/README.md",
+		"/Users/granthobbs/Developer/qplot/yahoo-finance-stock-data.js",
 		"/Users/granthobbs/Desktop/index.html",
 		"/Users/granthobbs/Developer/simple-plot/Gruntfile.js",
 		"/Users/granthobbs/Developer/simple-plot/app/index.html",
@@ -274,25 +265,7 @@
 		"/Users/granthobbs/Google Drive/Premier Wireless/Automation Scripts/SFGrabber/dnc.py",
 		"/Users/granthobbs/Google Drive/Premier Wireless/Automation Scripts/SFGrabber/augmenter.py",
 		"/Users/granthobbs/Downloads/wire3d_demo.py",
-		"/Users/granthobbs/Google Drive/Premier Wireless/Automation Scripts/SFGrabber/Dallas/add_defunct.py",
-		"/Users/granthobbs/Google Drive/Premier Wireless/Automation Scripts/SFGrabber/Dallas/grabber.py",
-		"/Users/granthobbs/Google Drive/Premier Wireless/Automation Scripts/SFGrabber/Dallas/id_grabber.py",
-		"/Users/granthobbs/Downloads/polymer-tutorial-master/finished/index.html",
-		"/Users/granthobbs/Downloads/polymer-tutorial-master/starter/index.html",
-		"/Users/granthobbs/Google Drive/Premier Wireless/Automation Scripts/SFGrabber/Houston/grabber.py",
-		"/Users/granthobbs/Google Drive/Premier Wireless/Automation Scripts/SFGrabber/Dallas/grabber2.py",
-		"/Users/granthobbs/Developer/CallLogger/Procfile",
-		"/Users/granthobbs/Developer/CallLogger/tools/process_hotel_accounts.py",
-		"/Users/granthobbs/Developer/CallLogger/tools/load_hotel_accounts.py",
-		"/Users/granthobbs/Developer/CallLogger/tools/collect_call_history.py",
-		"/Users/granthobbs/Developer/CallLogger/venv/lib/python2.7/site-packages/flask_user/templates/flask_user/reset_password.html",
-		"/Users/granthobbs/Developer/CallLogger/venv/lib/python2.7/site-packages/passlib/tests/test_handlers.py",
-		"/Users/granthobbs/Developer/CallLogger/venv/lib/python2.7/site-packages/pymongo/thread_util.py",
-		"/Users/granthobbs/Developer/CallLogger/venv/include/python2.7/timefuncs.h",
-		"/Users/granthobbs/Google Drive/Premier Wireless/Automation Scripts/SFGrabber/Dallas/accountParser.py",
-		"/Users/granthobbs/Developer/CallLogger/templates/ihg_account_detail.html",
-		"/Users/granthobbs/Developer/CallLogger/templates/history.html",
-		"/Users/granthobbs/Developer/CallLogger/tools/add_account_names_to_calls.py"
+		"/Users/granthobbs/Google Drive/Premier Wireless/Automation Scripts/SFGrabber/Dallas/add_defunct.py"
 	],
 	"find":
 	{
@@ -313,6 +286,18 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"0%",
+			"bower",
+			"vendor",
+			"min",
+			"d2",
+			"spinner",
+			"fff",
+			"showPlot",
+			"getStocksSort",
+			"data[0]",
+			"bower",
+			"require",
 			"x1",
 			"c1",
 			"trendlineY",
@@ -428,19 +413,7 @@
 			"&key&sensor",
 			"&key",
 			"log_call",
-			"call",
-			"list",
-			"\"post\"",
-			"today",
-			"datetime(n now",
-			"import datetime",
-			"datetime",
-			"cdo",
-			"threshold",
-			"disp",
-			"logged",
-			"followup",
-			"history = "
+			"call"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -448,6 +421,7 @@
 		"regex": false,
 		"replace_history":
 		[
+			"fff",
 			".Close",
 			"a.account.",
 			"a.",
@@ -468,373 +442,8 @@
 	"groups":
 	[
 		{
-			"selected": 2,
 			"sheets":
 			[
-				{
-					"buffer": 0,
-					"file": "/Users/granthobbs/Developer/qplot/app/index.html",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 887,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								404,
-								404
-							]
-						],
-						"settings":
-						{
-							"annotations":
-							[
-								"TODO",
-								"README",
-								"FIXME"
-							],
-							"csslint_options":
-							{
-								"adjoining-classes": "warning",
-								"box-model": true,
-								"box-sizing": "warning",
-								"compatible-vendor-prefixes": "warning",
-								"display-property-grouping": true,
-								"duplicate-background-images": "warning",
-								"duplicate-properties": true,
-								"empty-rules": true,
-								"errors": true,
-								"fallback-colors": "warning",
-								"floats": "warning",
-								"font-faces": "warning",
-								"font-sizes": "warning",
-								"gradients": "warning",
-								"ids": "warning",
-								"import": "warning",
-								"important": "warning",
-								"known-properties": true,
-								"outline-none": "warning",
-								"overqualified-elements": "warning",
-								"qualified-headings": "warning",
-								"regex-selectors": "warning",
-								"rules-count": "warning",
-								"shorthand": "warning",
-								"star-property-hack": "warning",
-								"text-indent": "warning",
-								"underscore-property-hack": "warning",
-								"unique-headings": "warning",
-								"universal-selector": "warning",
-								"vendor-prefix": true,
-								"zero-units": "warning"
-							},
-							"gjslint_ignore":
-							[
-								110
-							],
-							"gjslint_options":
-							[
-							],
-							"incomplete_sync": null,
-							"javascript_linter": "jshint",
-							"jshint_options":
-							{
-								"browser": true,
-								"evil": true,
-								"regexdash": true,
-								"sub": true,
-								"trailing": true,
-								"wsh": true
-							},
-							"pep8": true,
-							"pep8_ignore":
-							[
-								"E501"
-							],
-							"perl_linter": "perlcritic",
-							"pyflakes_ignore":
-							[
-							],
-							"pyflakes_ignore_import_*": true,
-							"remote_loading": false,
-							"sublimelinter": true,
-							"sublimelinter_delay": 2,
-							"sublimelinter_disable":
-							[
-							],
-							"sublimelinter_executable_map":
-							{
-							},
-							"sublimelinter_fill_outlines": false,
-							"sublimelinter_gutter_marks": true,
-							"sublimelinter_gutter_marks_theme": "simple",
-							"sublimelinter_mark_style": "none",
-							"sublimelinter_notes": false,
-							"sublimelinter_objj_check_ascii": false,
-							"sublimelinter_popup_errors_on_save": false,
-							"sublimelinter_syntax_map":
-							{
-								"C++": "c",
-								"Python Django": "python",
-								"Ruby on Rails": "ruby"
-							},
-							"sublimelinter_wrap_find": true,
-							"synced": false,
-							"syntax": "Packages/HTML/HTML.tmLanguage",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 1,
-					"type": "text"
-				},
-				{
-					"buffer": 1,
-					"file": "main.js",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 8975,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								4034,
-								4034
-							]
-						],
-						"settings":
-						{
-							"annotations":
-							[
-								"TODO",
-								"README",
-								"FIXME"
-							],
-							"csslint_options":
-							{
-								"adjoining-classes": "warning",
-								"box-model": true,
-								"box-sizing": "warning",
-								"compatible-vendor-prefixes": "warning",
-								"display-property-grouping": true,
-								"duplicate-background-images": "warning",
-								"duplicate-properties": true,
-								"empty-rules": true,
-								"errors": true,
-								"fallback-colors": "warning",
-								"floats": "warning",
-								"font-faces": "warning",
-								"font-sizes": "warning",
-								"gradients": "warning",
-								"ids": "warning",
-								"import": "warning",
-								"important": "warning",
-								"known-properties": true,
-								"outline-none": "warning",
-								"overqualified-elements": "warning",
-								"qualified-headings": "warning",
-								"regex-selectors": "warning",
-								"rules-count": "warning",
-								"shorthand": "warning",
-								"star-property-hack": "warning",
-								"text-indent": "warning",
-								"underscore-property-hack": "warning",
-								"unique-headings": "warning",
-								"universal-selector": "warning",
-								"vendor-prefix": true,
-								"zero-units": "warning"
-							},
-							"gjslint_ignore":
-							[
-								110
-							],
-							"gjslint_options":
-							[
-							],
-							"incomplete_sync": null,
-							"javascript_linter": "jshint",
-							"jshint_options":
-							{
-								"browser": true,
-								"evil": true,
-								"regexdash": true,
-								"sub": true,
-								"trailing": true,
-								"wsh": true
-							},
-							"pep8": true,
-							"pep8_ignore":
-							[
-								"E501"
-							],
-							"perl_linter": "perlcritic",
-							"pyflakes_ignore":
-							[
-							],
-							"pyflakes_ignore_import_*": true,
-							"remote_loading": false,
-							"sublimelinter": true,
-							"sublimelinter_delay": 2,
-							"sublimelinter_disable":
-							[
-							],
-							"sublimelinter_executable_map":
-							{
-							},
-							"sublimelinter_fill_outlines": false,
-							"sublimelinter_gutter_marks": true,
-							"sublimelinter_gutter_marks_theme": "simple",
-							"sublimelinter_mark_style": "none",
-							"sublimelinter_notes": false,
-							"sublimelinter_objj_check_ascii": false,
-							"sublimelinter_popup_errors_on_save": false,
-							"sublimelinter_syntax_map":
-							{
-								"C++": "c",
-								"Python Django": "python",
-								"Ruby on Rails": "ruby"
-							},
-							"sublimelinter_wrap_find": true,
-							"synced": false,
-							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 2227.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 2,
-					"type": "text"
-				},
-				{
-					"buffer": 2,
-					"file": "yahoo-finance-stock-data.js",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 6843,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								4560,
-								4560
-							]
-						],
-						"settings":
-						{
-							"annotations":
-							[
-								"TODO",
-								"README",
-								"FIXME"
-							],
-							"csslint_options":
-							{
-								"adjoining-classes": "warning",
-								"box-model": true,
-								"box-sizing": "warning",
-								"compatible-vendor-prefixes": "warning",
-								"display-property-grouping": true,
-								"duplicate-background-images": "warning",
-								"duplicate-properties": true,
-								"empty-rules": true,
-								"errors": true,
-								"fallback-colors": "warning",
-								"floats": "warning",
-								"font-faces": "warning",
-								"font-sizes": "warning",
-								"gradients": "warning",
-								"ids": "warning",
-								"import": "warning",
-								"important": "warning",
-								"known-properties": true,
-								"outline-none": "warning",
-								"overqualified-elements": "warning",
-								"qualified-headings": "warning",
-								"regex-selectors": "warning",
-								"rules-count": "warning",
-								"shorthand": "warning",
-								"star-property-hack": "warning",
-								"text-indent": "warning",
-								"underscore-property-hack": "warning",
-								"unique-headings": "warning",
-								"universal-selector": "warning",
-								"vendor-prefix": true,
-								"zero-units": "warning"
-							},
-							"gjslint_ignore":
-							[
-								110
-							],
-							"gjslint_options":
-							[
-							],
-							"incomplete_sync": null,
-							"javascript_linter": "jshint",
-							"jshint_options":
-							{
-								"browser": true,
-								"evil": true,
-								"regexdash": true,
-								"sub": true,
-								"trailing": true,
-								"wsh": true
-							},
-							"pep8": true,
-							"pep8_ignore":
-							[
-								"E501"
-							],
-							"perl_linter": "perlcritic",
-							"pyflakes_ignore":
-							[
-							],
-							"pyflakes_ignore_import_*": true,
-							"remote_loading": false,
-							"sublimelinter": true,
-							"sublimelinter_delay": 2,
-							"sublimelinter_disable":
-							[
-							],
-							"sublimelinter_executable_map":
-							{
-							},
-							"sublimelinter_fill_outlines": false,
-							"sublimelinter_gutter_marks": true,
-							"sublimelinter_gutter_marks_theme": "simple",
-							"sublimelinter_mark_style": "none",
-							"sublimelinter_notes": false,
-							"sublimelinter_objj_check_ascii": false,
-							"sublimelinter_popup_errors_on_save": false,
-							"sublimelinter_syntax_map":
-							{
-								"C++": "c",
-								"Python Django": "python",
-								"Ruby on Rails": "ruby"
-							},
-							"sublimelinter_wrap_find": true,
-							"synced": false,
-							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 1428.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 0,
-					"type": "text"
-				}
 			]
 		}
 	],
@@ -905,23 +514,19 @@
 		"selected_items":
 		[
 			[
-				"inde",
-				"app/index.html"
+				"less",
+				"node_modules/grunt-contrib-less/tasks/less.js"
 			],
 			[
 				"yahoo",
 				"app/scripts/yahoo-finance-stock-data.js"
 			],
 			[
-				"index",
-				"~/Developer/qplot/app/index.html"
+				"app.less",
+				"app/less/app.less"
 			],
 			[
-				"gruntfile",
-				"Gruntfile.js"
-			],
-			[
-				"index.h",
+				"index.html",
 				"app/index.html"
 			],
 			[
@@ -933,20 +538,32 @@
 				"Gruntfile.js"
 			],
 			[
-				"yahoo-finance",
-				"yahoo-finance-stock-data.js"
+				"index",
+				"app/index.html"
+			],
+			[
+				"main.",
+				"app/scripts/main.js"
+			],
+			[
+				"inde",
+				"app/index.html"
 			],
 			[
 				"main",
 				"app/scripts/main.js"
 			],
 			[
-				"app.less",
-				"app/less/app.less"
+				"gruntfile",
+				"Gruntfile.js"
 			],
 			[
-				"index.html",
+				"index.h",
 				"app/index.html"
+			],
+			[
+				"yahoo-finance",
+				"yahoo-finance-stock-data.js"
 			],
 			[
 				"load-grung",
@@ -1180,6 +797,10 @@
 		"height": 500.0,
 		"selected_items":
 		[
+			[
+				"qpl",
+				"~/Developer/qplot/qplot.sublime-project"
+			],
 			[
 				"",
 				"~/Developer/CallLogger/CallLogger.sublime-project"

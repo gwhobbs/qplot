@@ -339,6 +339,9 @@ getStocksSortedByDay({ stocks: [$('#s1').val(), $('#s2').val()], startDate: getD
 
 function handleSubmit() {
 	// fade out existing chart
+	$('.progress-bar').width(0);
+
+	$('#loading').animate({opacity:1},100);
 	$('#plot').animate({opacity:0},300);
 
 	// retrieve the data, and call showPlot() when complete
