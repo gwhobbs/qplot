@@ -55,15 +55,15 @@
 	"build_system": "",
 	"command_palette":
 	{
-		"height": 374.0,
+		"height": 85.0,
 		"selected_items":
 		[
 			[
-				"instal",
+				"install",
 				"Package Control: Install Package"
 			],
 			[
-				"install",
+				"instal",
 				"Package Control: Install Package"
 			],
 			[
@@ -111,7 +111,7 @@
 				"Set Syntax: HTML (Angular.js)"
 			]
 		],
-		"width": 664.0
+		"width": 530.0
 	},
 	"console":
 	{
@@ -134,10 +134,19 @@
 	},
 	"expanded_folders":
 	[
-		"/Users/granthobbs/Developer/qplot"
+		"/Users/granthobbs/Developer/Lucid/app"
 	],
 	"file_history":
 	[
+		"/Users/granthobbs/Developer/Lucid/qplot.sublime-project",
+		"/Users/granthobbs/Developer/Lucid/app/less/app.less",
+		"/Users/granthobbs/Developer/Lucid/app/index.html",
+		"/Users/granthobbs/Developer/Lucid/app/bower_components/seiyria-bootstrap-slider/index.html",
+		"/Users/granthobbs/Developer/Lucid/app/bower_components/jquery/src/core/parseHTML.js",
+		"/Users/granthobbs/Developer/Lucid/app/bower_components/bootstrap-datepicker/docs/_screenshots/script/html-imports.min.js",
+		"/Users/granthobbs/Developer/Lucid/app/bower_components/bootstrap/less/mixins/hide-text.less",
+		"/Users/granthobbs/Developer/Lucid/app/bower_components/modernizr/test/caniuse_files/hashchange.html",
+		"/Users/granthobbs/Library/Application Support/Sublime Text 3/Packages/User/Preferences.sublime-settings",
 		"/Users/granthobbs/Developer/qplot/app/less/app.less",
 		"/Users/granthobbs/Developer/qplot/app/index.html",
 		"/Users/granthobbs/Developer/qplot/Gruntfile.js",
@@ -256,16 +265,7 @@
 		"/Users/granthobbs/Google Drive/Premier Wireless/Notes 12-10",
 		"/Users/granthobbs/Developer/CallLogger/static/bower_components/jquery/src/data/var/data_priv.js",
 		"/Users/granthobbs/Developer/CallLogger/static/bower_components/jquery/src/data/var/data_user.js",
-		"/Users/granthobbs/Developer/CallLogger/venv/include/python2.7/cStringIO.h",
-		"/Users/granthobbs/Developer/CallLogger/CallLogger.sublime-project",
-		"/Users/granthobbs/Downloads/csvParse.py",
-		"/Users/granthobbs/Developer/CallLogger/venv/include/python2.7/rangeobject.h",
-		"/Users/granthobbs/Developer/CallLogger/requirements.txt",
-		"/Users/granthobbs/Downloads/surface3d_demo.py",
-		"/Users/granthobbs/Google Drive/Premier Wireless/Automation Scripts/SFGrabber/dnc.py",
-		"/Users/granthobbs/Google Drive/Premier Wireless/Automation Scripts/SFGrabber/augmenter.py",
-		"/Users/granthobbs/Downloads/wire3d_demo.py",
-		"/Users/granthobbs/Google Drive/Premier Wireless/Automation Scripts/SFGrabber/Dallas/add_defunct.py"
+		"/Users/granthobbs/Developer/CallLogger/venv/include/python2.7/cStringIO.h"
 	],
 	"find":
 	{
@@ -286,6 +286,7 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"rgba",
 			"0%",
 			"bower",
 			"vendor",
@@ -412,8 +413,7 @@
 			"wiat",
 			"&key&sensor",
 			"&key",
-			"log_call",
-			"call"
+			"log_call"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -513,6 +513,14 @@
 		"height": 0.0,
 		"selected_items":
 		[
+			[
+				"html",
+				"index.html"
+			],
+			[
+				"app",
+				"less/app.less"
+			],
 			[
 				"less",
 				"node_modules/grunt-contrib-less/tasks/less.js"
@@ -656,10 +664,6 @@
 			[
 				"raw",
 				"tools/parse_raw.py"
-			],
-			[
-				"app",
-				"app.py"
 			],
 			[
 				"app.py",

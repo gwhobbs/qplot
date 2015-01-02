@@ -116,6 +116,7 @@ v2013-08-05
                         });
                         d['Close'] = d['Settle'];
                         d['Symbol'] = data['code'];
+                        d['Query'] = stock;
                         data['quote'].push(d);
                     });
                     results[stocks.indexOf(stock)] = data;
@@ -132,6 +133,9 @@ v2013-08-05
                     } else {
                         $('.progress.status').text('INTERPRETING RESULTS...');
                     }
+                    data.quote.forEach(function(day) {
+                      day['Query'] = stock;
+                    });
                     results[stocks.indexOf(stock)] = data;
                     // check if finshed fetching
                     if (remaining == 0) {
@@ -145,6 +149,8 @@ v2013-08-05
 
     function getStocksSortedByDay(list_opts, type, complete) {
         getStocks(list_opts, type, function(err, data) {
+          var independentVariable = list_opts.stocks[0];
+          var dependentVariable = list_opts.stocks[1];
             quotes = [];
             dates = [];
             dateList = {};
@@ -154,19 +160,55 @@ v2013-08-05
             $('.progress-bar').animate({width: '0%'},100);
 
             data[0].quote.forEach(function(day) {
-                dates.push(day['Date']);
+              var date = day.Date;
+                dates.push(date);
+                if (!dateList[date]) {
+                  dateList[date] = {};
+                }
+                var query = day.Query;
+                dateList[date][query] = day;
             });
+            data[1].quote.forEach(function(day) {
+              var date = day.Date;
+              dates.push(date);
+              if (!dateList[date]) {
+                dateList[date] = {};
+              }
+              var query = day.Query;
+              dateList[date][query] = day;
+            });
+
+            var outputDates = [];
+            var outputInd = [];
+            var outputDep = [];
+            for (var date in dateList) {
+              if (Object.keys(dateList[date]).length < 2) {
+                delete dateList[date];
+              }
+
+            }
+            for (var date in dateList) {
+
+              outputInd.push(dateList[date][independentVariable]);
+              outputDep.push(dateList[date][dependentVariable]);
+              outputDates.push(date);
+            }
+
+
             data.forEach(function(symbol) {
                 quotes.push(symbol.quote);
             });
+            var outputGrid = [outputInd, outputDep, outputDates];
             quotes.push(dates);
-            complete(null, zip(quotes));
+            complete(null, zip(outputGrid));
         });
     }
     window.getStocksSortedByDay = getStocksSortedByDay;
 
     function getZippedDailyAvgs(list_opts, type, complete) {
         getStocks(list_opts, type, function(err, data) {
+            var independentVariable = list_opts.stocks[0];
+            var dependentVariable = list_opts.stocks[1];
             results = [];
             dates = ['Date'];
             latest = ['Latest'];
@@ -183,7 +225,7 @@ v2013-08-05
                     stockQuotes.push(dailyAvg);
                 });
                 results.push(stockQuotes);
-                
+
             });
             results.push(latest);
 
@@ -214,4 +256,3 @@ function zip(arrays) {
     });
 }
 */
-

@@ -116,7 +116,7 @@ function showPlot(data) {
 		.attr('class', 'tooltip')
 		.style('opacity',0);
 
-	
+
 
 
 
@@ -182,7 +182,7 @@ function showPlot(data) {
 		});
 
 	var monthsAgo = parseInt($('input#months_ago').val());
-	
+
 	// draw circles
 	dayGroup.append('circle')
 		.attr('r',0)
@@ -194,7 +194,7 @@ function showPlot(data) {
 			tooltip.transition()
 				.duration(200)
 				.style('opacity', .9);
-			tooltip.html('<b>'+ moment(d[2],'YYYY-MM-DD').format('LL')+'</b>' + '<br/>' + d[0].Symbol + ': ' + d[0].Close + '<br />' +d[1].Symbol + ': ' + d[1].Close)
+			tooltip.html('<b>'+ moment(d[2],'YYYY-MM-DD').format('LL')+'</b>' + '<br/>' + moment(d[0].Date,'YYYY-MM-DD').format('LL') + '<br/>' + moment(d[1].Date,'YYYY-MM-DD').format('LL') + '<br/>'+ d[0].Symbol + ': ' + d[0].Close + '<br />' +d[1].Symbol + ': ' + d[1].Close)
 				.style('left', (d3.event.pageX + 5) + 'px')
 				.style('top', (d3.event.pageY - 28) + 'px');
 		})
@@ -276,18 +276,18 @@ function showPlot(data) {
 			var sqrDiff = diff * diff;
 			return sqrDiff;
 		});
-	  
+
 	  var avgSquareDiff = average(squareDiffs);
-	 
+
 	  var stdDev = Math.sqrt(avgSquareDiff);
 	  return stdDev;
 	}
-	 
+
 	function average(data){
 	  var sum = data.reduce(function(sum, value){
 	    return sum + value;
 	  }, 0);
-	 
+
 	  var avg = sum / data.length;
 	  return avg;
 	}
@@ -300,23 +300,23 @@ function showPlot(data) {
 // returns slope, intercept and r-square of the line
 	function leastSquares(xSeries, ySeries) {
 		var reduceSumFunc = function(prev, cur) { return prev + cur; };
-		
+
 		var xBar = xSeries.reduce(reduceSumFunc) * 1.0 / xSeries.length;
 		var yBar = ySeries.reduce(reduceSumFunc) * 1.0 / ySeries.length;
 
 		var ssXX = xSeries.map(function(d) { return Math.pow(d - xBar, 2); })
 			.reduce(reduceSumFunc);
-		
+
 		var ssYY = ySeries.map(function(d) { return Math.pow(d - yBar, 2); })
 			.reduce(reduceSumFunc);
-			
+
 		var ssXY = xSeries.map(function(d, i) { return (d - xBar) * (ySeries[i] - yBar); })
 			.reduce(reduceSumFunc);
-			
+
 		var slope = ssXY / ssXX;
 		var intercept = yBar - (xBar * slope);
 		var rSquare = Math.pow(ssXY, 2) / (ssXX * ssYY);
-		
+
 		return [slope, intercept, rSquare];
 	}
 
@@ -354,4 +354,3 @@ var form = $('#req_form').submit(function(e) {
 	e.preventDefault();
 	handleSubmit();
 });
-
