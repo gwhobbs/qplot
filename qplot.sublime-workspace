@@ -138,8 +138,9 @@
 	],
 	"file_history":
 	[
-		"/Users/granthobbs/Developer/Lucid/qplot.sublime-project",
 		"/Users/granthobbs/Developer/Lucid/app/less/app.less",
+		"/Users/granthobbs/Developer/Lucid/app/scripts/yahoo-finance-stock-data.js",
+		"/Users/granthobbs/Developer/Lucid/qplot.sublime-project",
 		"/Users/granthobbs/Developer/Lucid/app/index.html",
 		"/Users/granthobbs/Developer/Lucid/app/bower_components/seiyria-bootstrap-slider/index.html",
 		"/Users/granthobbs/Developer/Lucid/app/bower_components/jquery/src/core/parseHTML.js",
@@ -264,8 +265,7 @@
 		"/Users/granthobbs/Downloads/strain-rate-tensor/camlight.inc",
 		"/Users/granthobbs/Google Drive/Premier Wireless/Notes 12-10",
 		"/Users/granthobbs/Developer/CallLogger/static/bower_components/jquery/src/data/var/data_priv.js",
-		"/Users/granthobbs/Developer/CallLogger/static/bower_components/jquery/src/data/var/data_user.js",
-		"/Users/granthobbs/Developer/CallLogger/venv/include/python2.7/cStringIO.h"
+		"/Users/granthobbs/Developer/CallLogger/static/bower_components/jquery/src/data/var/data_user.js"
 	],
 	"find":
 	{
@@ -514,20 +514,20 @@
 		"selected_items":
 		[
 			[
-				"html",
-				"index.html"
+				"yahoo",
+				"scripts/yahoo-finance-stock-data.js"
 			],
 			[
 				"app",
 				"less/app.less"
 			],
 			[
-				"less",
-				"node_modules/grunt-contrib-less/tasks/less.js"
+				"html",
+				"index.html"
 			],
 			[
-				"yahoo",
-				"app/scripts/yahoo-finance-stock-data.js"
+				"less",
+				"node_modules/grunt-contrib-less/tasks/less.js"
 			],
 			[
 				"app.less",
