@@ -4,26 +4,40 @@
 <head>
 
 	<meta charset="UTF-8">
-	<title>Simple Plot</title>
-	<link rel="stylesheet" href="styles/4dcdec2e.app.css">
+	<title>Lucid</title>
+	<link rel="stylesheet" href="styles/0a534f86.app.css">
 	<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
 
 
 </head>
 <body>
+
 	<form id="req_form" class="form-inline">
 		<input class="form-control input dark" type="text" id="s1" placeholder="Symbol 1 (Ind.)" value="CHRIS/CME_CL1">
 		<input class="form-control input dark" type="text" id="s2" placeholder="Symbol 2 (Dep.)" value="PBT">
 		<div class="input-group">
 			<input type="text" id="months_ago" class="form-control input dark" value="3">
-			<span class="input-group-addon">month</span>
+			<span class="input-group-addon">month(s) prior to</span>
 		</div>
+		<input class="form-control input dark" type="text" id="d2" placeholder="Until Date" data-provide="datepicker" data-date-format="yyyy-mm-dd" data-date-autoclose="true">
 		<input class="form-control btn btn-primary" type="submit">
 	</form>
+	<div id="loading">
+		<div class="progress progress-dark progress-slim">
+			<div class="progress-bar" role="progressbar" aria-valuenow="60" aria="valuemin=&quot;0&quot;" aria-valuemax="100" style="width: 0%">
+				<span class="sr-only">60% Complete</span>
+			</div>
+		</div>
+		<div class="progress-status">
+			FETCHING DATA...
+		</div>
+	</div>
 	<div id="plot"></div>
 </body>
 
-<!-- <script src="scripts/vendor.js"></script>
- --><script src="scripts/f29a1252.main.js"></script>
+<!-- <script src="scripts/a08f6bd4.vendor.js"></script>
+ --><script src="scripts/dc8ea234.main.js"></script>
+<script src="scripts/a08f6bd4.vendor.js"></script>
+
 
 </html>

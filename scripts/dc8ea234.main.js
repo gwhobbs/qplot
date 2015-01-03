@@ -1,7 +1,7 @@
 /*!
  * simple-plot-0.0.0
  * 
- * 2014-12-26
+ * 2015-01-03
  */
 
 require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"backbone":[function(require,module,exports){
@@ -17756,7 +17756,7 @@ function showPlot(data) {
 		.attr('class', 'tooltip')
 		.style('opacity',0);
 
-	
+
 
 
 
@@ -17794,76 +17794,7 @@ function showPlot(data) {
 	// make the plot visible
 	$('#plot').animate({opacity:1});
 
-	function plotTrendline(leastSquaresCoeff, cssClass, color, width) {
-		var x1 = d3.min(xSeries);
-		var y1 = trendlineY(d3.min(xSeries));
-
-		if ( y1 < d3.min(ySeries) ) {
-			y1 = d3.min(ySeries);
-			x1 = trendlineX(y1);
-		}
-
-		var x2 = d3.max(xSeries);
-		var y2 = trendlineY(d3.max(xSeries));
-
-		if (y2 > d3.max(ySeries)) {
-			y2 = d3.max(ySeries);
-			x2 = trendlineX(y2);
-		}
-
-		var trendData = [[x1, y1, x2, y2]];
-		var trendline = svg.selectAll('.' + cssClass)
-			.data(trendData);
-
-		trendline.enter()
-			.append('line')
-			.attr('class', cssClass)
-			.attr('x1', function(d) {return x(d[0]);})
-			.attr('y1', function(d) {return y(d[1]);})
-			.attr('x2', function(d) {return x(d[2]);})
-			.attr('y2', function(d) {return y(d[3]);})
-			.attr('stroke-dasharray', '10,10')
-			.attr('stroke', color)
-			.attr('stroke-width', width)
-			.attr('opacity',0) // start at 0 opacity, and fade in
-			.transition()
-			.attr('opacity',1)
-			.duration(1000);
-	}
-
 	plotTrendline(leastSquaresCoeff, 'trendline', '#888', 2);
-	
-
-	function trendlineY(xVal) {
-		return leastSquaresCoeff[0]*xVal + leastSquaresCoeff[1];
-	}
-
-	function trendlineX(yVal) {
-		return (yVal - leastSquaresCoeff[1]) / leastSquaresCoeff[0];
-	}
-
-	// figure out the standard deviation
-	function standardDeviation(data){
-		var squareDiffs = data.map(function(day){
-			var diff = day[1].Close - trendlineY(day[0].Close);
-			var sqrDiff = diff * diff;
-			return sqrDiff;
-		});
-	  
-	  var avgSquareDiff = average(squareDiffs);
-	 
-	  var stdDev = Math.sqrt(avgSquareDiff);
-	  return stdDev;
-	}
-	 
-	function average(data){
-	  var sum = data.reduce(function(sum, value){
-	    return sum + value;
-	  }, 0);
-	 
-	  var avg = sum / data.length;
-	  return avg;
-	}
 
 	var sd = standardDeviation(data);
 
@@ -17891,7 +17822,7 @@ function showPlot(data) {
 		});
 
 	var monthsAgo = parseInt($('input#months_ago').val());
-	
+
 	// draw circles
 	dayGroup.append('circle')
 		.attr('r',0)
@@ -17903,7 +17834,7 @@ function showPlot(data) {
 			tooltip.transition()
 				.duration(200)
 				.style('opacity', .9);
-			tooltip.html('<b>'+ moment(d[2],'YYYY-MM-DD').format('LL')+'</b>' + '<br/>' + d[0].Symbol + ': ' + d[0].Close + '<br />' +d[1].Symbol + ': ' + d[1].Close)
+			tooltip.html('<b>'+ moment(d[2],'YYYY-MM-DD').format('LL')+'</b>' + '<br/>' + moment(d[0].Date,'YYYY-MM-DD').format('LL') + '<br/>' + moment(d[1].Date,'YYYY-MM-DD').format('LL') + '<br/>'+ d[0].Symbol + ': ' + d[0].Close + '<br />' +d[1].Symbol + ': ' + d[1].Close)
 				.style('left', (d3.event.pageX + 5) + 'px')
 				.style('top', (d3.event.pageY - 28) + 'px');
 		})
@@ -17925,37 +17856,119 @@ function showPlot(data) {
 			return (data.length - data.indexOf(d)) * (5/monthsAgo*3);
 		});
 
+		// some plotting functions
+
+		function plotTrendline(leastSquaresCoeff, cssClass, color, width) {
+		var x1 = d3.min(xSeries);
+		var y1 = trendlineY(d3.min(xSeries));
+
+		if ( y1 < d3.min(ySeries) ) {
+			y1 = d3.min(ySeries);
+			x1 = trendlineX(y1);
+		} else if ( y1 > d3.max(ySeries) ) {
+			y1 = d3.max(ySeries);
+			x1 = trendlineX(y1);
+		}
+
+		var x2 = d3.max(xSeries);
+		var y2 = trendlineY(d3.max(xSeries));
+
+		if (y2 > d3.max(ySeries)) {
+			y2 = d3.max(ySeries);
+			x2 = trendlineX(y2);
+		} else if (y2 < d3.min(ySeries) ) {
+			y2 = d3.min(ySeries);
+			x2 = trendlineX(y2);
+		}
+
+		var trendData = [[x1, y1, x2, y2]];
+		var trendline = svg.selectAll('.' + cssClass)
+			.data(trendData);
+
+		trendline.enter()
+			.append('line')
+			.attr('class', cssClass)
+			.attr('x1', function(d) {return x(d[0]);})
+			.attr('y1', function(d) {return y(d[1]);})
+			.attr('x2', function(d) {return x(d[2]);})
+			.attr('y2', function(d) {return y(d[3]);})
+			.attr('stroke-dasharray', '10,10')
+			.attr('stroke', color)
+			.attr('stroke-width', width)
+			.attr('opacity',0) // start at 0 opacity, and fade in
+			.transition()
+			.attr('opacity',1)
+			.duration(1000);
+	}
+
+	function trendlineY(xVal) {
+		return leastSquaresCoeff[0]*xVal + leastSquaresCoeff[1];
+	}
+
+	function trendlineX(yVal) {
+		return (yVal - leastSquaresCoeff[1]) / leastSquaresCoeff[0];
+	}
+
+	// figure out the standard deviation
+	function standardDeviation(data){
+		var squareDiffs = data.map(function(day){
+			var diff = day[1].Close - trendlineY(day[0].Close);
+			var sqrDiff = diff * diff;
+			return sqrDiff;
+		});
+
+	  var avgSquareDiff = average(squareDiffs);
+
+	  var stdDev = Math.sqrt(avgSquareDiff);
+	  return stdDev;
+	}
+
+	function average(data){
+	  var sum = data.reduce(function(sum, value){
+	    return sum + value;
+	  }, 0);
+
+	  var avg = sum / data.length;
+	  return avg;
+	}
+
 }
+
+
+
 
 // returns slope, intercept and r-square of the line
 	function leastSquares(xSeries, ySeries) {
 		var reduceSumFunc = function(prev, cur) { return prev + cur; };
-		
+
 		var xBar = xSeries.reduce(reduceSumFunc) * 1.0 / xSeries.length;
 		var yBar = ySeries.reduce(reduceSumFunc) * 1.0 / ySeries.length;
 
 		var ssXX = xSeries.map(function(d) { return Math.pow(d - xBar, 2); })
 			.reduce(reduceSumFunc);
-		
+
 		var ssYY = ySeries.map(function(d) { return Math.pow(d - yBar, 2); })
 			.reduce(reduceSumFunc);
-			
+
 		var ssXY = xSeries.map(function(d, i) { return (d - xBar) * (ySeries[i] - yBar); })
 			.reduce(reduceSumFunc);
-			
+
 		var slope = ssXY / ssXX;
 		var intercept = yBar - (xBar * slope);
 		var rSquare = Math.pow(ssXY, 2) / (ssXX * ssYY);
-		
+
 		return [slope, intercept, rSquare];
 	}
 
 var moment = require('moment');
 
+$('input#d2').val(moment().format('YYYY-MM-DD'));
+
 function getDateRange() {
 	var monthsAgo = $('input#months_ago').val();
-	var d2 = moment().format('YYYY-MM-DD');
-	var d1 = moment().subtract(parseInt(monthsAgo), 'months').format('YYYY-MM-DD');
+	var d2 = $('input#d2').val();
+	var d1 = moment(d2, 'YYYY-MM-DD').subtract(parseInt(monthsAgo), 'months').format('YYYY-MM-DD');
+	console.log({ start: d1, end: d2 });
 	return { start: d1, end: d2 };
 }
 
@@ -17966,6 +17979,9 @@ getStocksSortedByDay({ stocks: [$('#s1').val(), $('#s2').val()], startDate: getD
 
 function handleSubmit() {
 	// fade out existing chart
+	$('.progress-bar').width(0);
+
+	$('#loading').animate({opacity:1},100);
 	$('#plot').animate({opacity:0},300);
 
 	// retrieve the data, and call showPlot() when complete
@@ -17978,7 +17994,6 @@ var form = $('#req_form').submit(function(e) {
 	e.preventDefault();
 	handleSubmit();
 });
-
 
 },{"./app.js":1,"./yahoo-finance-stock-data.js":3,"d3-browserify":4,"moment":5}],3:[function(require,module,exports){
 /*
@@ -18028,7 +18043,8 @@ v2013-08-05
             if (!data || !data.query) {
                 err = true;
             }
-            complete(err, !err && data.query.results);    });
+
+            complete(err, !err && data.query.results, opts.stock);    });
     }
     window.getStock = getStock;
 
@@ -18064,7 +18080,7 @@ v2013-08-05
                 console.log('error');
                 err = true;
             }
-            complete(err, !err && data);    });
+            complete(err, !err && data, opts.stock);    });
     }
     window.getStockQF = getStockQF;
 
@@ -18073,13 +18089,21 @@ v2013-08-05
         var remaining = list_opts.stocks.length;
         var stocks = list_opts.stocks;
         var results = [ null, null ];
+        $('.progress-status').text(('Pulling data from ' + remaining + ' sources...').toUpperCase());
+        $('.progress-bar').animate({width: '30%'},100);
         // retrieve data for each stock asynchronously, then combine when finished
         list_opts.stocks.forEach(function(stock) {
             opts = list_opts;
             opts['stock'] = stock; // this is the stock symbol we will be feeding into getStock()
             if (stock.indexOf('/') > -1) {
-                getStockQF(opts, type, function(err, data) {
+                getStockQF(opts, type, function(err, data, query) {
                     remaining -= 1;
+                    if (remaining == 1) {
+                        $('.progress-status').text('WAITING FOR ONE MORE CRITICAL PIECE OF DATA...');
+                        $('.progress-bar').animate({width: '60%'},100);
+                    } else {
+                        $('.progress.status').text('INTERPRETING RESULTS...');
+                    }
                     data['quote'] = []
                     var colNames = data.column_names;
                     data['data'].forEach(function(day) {
@@ -18090,6 +18114,7 @@ v2013-08-05
                         });
                         d['Close'] = d['Settle'];
                         d['Symbol'] = data['code'];
+                        d['Query'] = stock;
                         data['quote'].push(d);
                     });
                     results[stocks.indexOf(stock)] = data;
@@ -18098,8 +18123,17 @@ v2013-08-05
                     }
                 });
             } else {
-                getStock(opts, type, function(err, data) {
+                getStock(opts, type, function(err, data, query) {
                     remaining -= 1;
+                    if (remaining == 1) {
+                        $('.progress-status').text('WAITING FOR ONE MORE CRITICAL PIECE OF DATA...');
+                        $('.progress-bar').animate({width: '60%'},100);
+                    } else {
+                        $('.progress.status').text('INTERPRETING RESULTS...');
+                    }
+                    data.quote.forEach(function(day) {
+                      day['Query'] = stock;
+                    });
                     results[stocks.indexOf(stock)] = data;
                     // check if finshed fetching
                     if (remaining == 0) {
@@ -18113,22 +18147,66 @@ v2013-08-05
 
     function getStocksSortedByDay(list_opts, type, complete) {
         getStocks(list_opts, type, function(err, data) {
+          var independentVariable = list_opts.stocks[0];
+          var dependentVariable = list_opts.stocks[1];
             quotes = [];
             dates = [];
+            dateList = {};
+            $('.progress-status').text('INTERPRETING RESULTS...');
+            $('.progress-bar').animate({width: '100%'},100);
+            $('#loading').animate({opacity: '0'},100);
+            $('.progress-bar').animate({width: '0%'},100);
+
             data[0].quote.forEach(function(day) {
-                dates.push(day['Date']);
+              var date = day.Date;
+                dates.push(date);
+                if (!dateList[date]) {
+                  dateList[date] = {};
+                }
+                var query = day.Query;
+                dateList[date][query] = day;
             });
+            data[1].quote.forEach(function(day) {
+              var date = day.Date;
+              dates.push(date);
+              if (!dateList[date]) {
+                dateList[date] = {};
+              }
+              var query = day.Query;
+              dateList[date][query] = day;
+            });
+
+            var outputDates = [];
+            var outputInd = [];
+            var outputDep = [];
+            for (var date in dateList) {
+              if (Object.keys(dateList[date]).length < 2) {
+                delete dateList[date];
+              }
+
+            }
+            for (var date in dateList) {
+
+              outputInd.push(dateList[date][independentVariable]);
+              outputDep.push(dateList[date][dependentVariable]);
+              outputDates.push(date);
+            }
+
+
             data.forEach(function(symbol) {
                 quotes.push(symbol.quote);
             });
+            var outputGrid = [outputInd, outputDep, outputDates];
             quotes.push(dates);
-            complete(null, zip(quotes));
+            complete(null, zip(outputGrid));
         });
     }
     window.getStocksSortedByDay = getStocksSortedByDay;
 
     function getZippedDailyAvgs(list_opts, type, complete) {
         getStocks(list_opts, type, function(err, data) {
+            var independentVariable = list_opts.stocks[0];
+            var dependentVariable = list_opts.stocks[1];
             results = [];
             dates = ['Date'];
             latest = ['Latest'];
@@ -18145,7 +18223,7 @@ v2013-08-05
                     stockQuotes.push(dailyAvg);
                 });
                 results.push(stockQuotes);
-                
+
             });
             results.push(latest);
 
@@ -18176,7 +18254,6 @@ function zip(arrays) {
     });
 }
 */
-
 
 },{}],4:[function(require,module,exports){
 module.exports = function() {
