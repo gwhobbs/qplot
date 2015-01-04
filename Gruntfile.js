@@ -27,7 +27,9 @@ module.exports = function(grunt) {
       options: {
         base: 'dist'
       },
-      src: ['**']
+      publishApp: {
+        src: ['**']
+      }
     },
     banner: '/*!\n' +
             ' * <%= pkg.name %>-<%= pkg.version %>\n' +
@@ -195,7 +197,7 @@ module.exports = function(grunt) {
         }
       }
     },
-    
+
     autoprefixer: {
       options: {
         browsers: ['last 1 version']
@@ -291,9 +293,9 @@ module.exports = function(grunt) {
       // This task is pre-configured if you do not wish to use Usemin
       // blocks for your CSS. By default, the Usemin block from your
       // `index.html` will take care of minification, e.g.
-      
+
       //     <!-- build:css({.tmp,app}) styles/main.css -->
-      
+
       dist: {
           files: {
               '/styles/main.css': [
@@ -349,7 +351,7 @@ module.exports = function(grunt) {
         src: '{,*/}*.css'
       }
     },
-    
+
     modernizr: {
       dist: {
         devFile: '<%= yeoman.vendor %>/modernizr/modernizr.js',
@@ -437,6 +439,6 @@ module.exports = function(grunt) {
 
   grunt.registerTask('deploy', [
   	'build',
-  	'gh-pages'
+  	'gh-pages:publishApp'
   ]);
 };
