@@ -3,7 +3,16 @@ Yahoo Finance stock historical data, prices and details retrieval function writt
 v2013-08-05
 (c) 2013 by Fincluster ltd - http://fincluster.com <dev@fincluster.com>
 */
-(function($) {
+
+var Progress = require('./Progress.js');
+
+var progressBarStates = [
+  { message: 'Pulling data from 2 sources...', percentDone: 20 },
+  { message: 'Waiting for one more critical piece of data...', percentDone: 60 },
+  { message: 'Interpreting results...', percentDone: 90 },
+];
+
+var progressBar = new Progress.bar(progressBarStates, '.progress-bar', '.progress-status');
 
     // a utility function useful for returning values for certain charting packages
     function zip(arrays) {
@@ -48,7 +57,6 @@ v2013-08-05
 
             complete(err, !err && data.query.results, opts.stock);    });
     }
-    window.getStock = getStock;
 
     function getStockQF(opts, type, complete) {
         var defs = {
@@ -84,15 +92,17 @@ v2013-08-05
             }
             complete(err, !err && data, opts.stock);    });
     }
-    window.getStockQF = getStockQF;
 
     function getStocks(list_opts, type, complete) {
         // figure out how many requests are neccessary and make a container for the results
         var remaining = list_opts.stocks.length;
+        if (remaining != 2) { throw "Error: getStocks() only supports lists of 2 stocks"; }
+
         var stocks = list_opts.stocks;
-        var results = [ null, null ];
-        $('.progress-status').text(('Pulling data from ' + remaining + ' sources...').toUpperCase());
-        $('.progress-bar').animate({width: '30%'},100);
+        var results = [null, null];
+
+        progressBar.start();
+
         // retrieve data for each stock asynchronously, then combine when finished
         list_opts.stocks.forEach(function(stock) {
             opts = list_opts;
@@ -100,12 +110,13 @@ v2013-08-05
             if (stock.indexOf('/') > -1) {
                 getStockQF(opts, type, function(err, data, query) {
                     remaining -= 1;
-                    if (remaining == 1) {
-                        $('.progress-status').text('WAITING FOR ONE MORE CRITICAL PIECE OF DATA...');
-                        $('.progress-bar').animate({width: '60%'},100);
-                    } else {
-                        $('.progress.status').text('INTERPRETING RESULTS...');
-                    }
+                    // if (remaining == 1) {
+                    //     $('.progress-status').text('WAITING FOR ONE MORE CRITICAL PIECE OF DATA...');
+                    //     $('.progress-bar').animate({width: '60%'},100);
+                    // } else {
+                    //     $('.progress.status').text('INTERPRETING RESULTS...');
+                    // }
+                    progressBar.increment();
                     data['quote'] = []
                     var colNames = data.column_names;
                     data['data'].forEach(function(day) {
@@ -127,12 +138,7 @@ v2013-08-05
             } else {
                 getStock(opts, type, function(err, data, query) {
                     remaining -= 1;
-                    if (remaining == 1) {
-                        $('.progress-status').text('WAITING FOR ONE MORE CRITICAL PIECE OF DATA...');
-                        $('.progress-bar').animate({width: '60%'},100);
-                    } else {
-                        $('.progress.status').text('INTERPRETING RESULTS...');
-                    }
+                    progressBar.increment();
                     data.quote.forEach(function(day) {
                       day['Query'] = stock;
                     });
@@ -145,7 +151,6 @@ v2013-08-05
             }
         });
     }
-    window.getStocks = getStocks;
 
     function getStocksSortedByDay(list_opts, type, complete) {
         getStocks(list_opts, type, function(err, data) {
@@ -154,11 +159,7 @@ v2013-08-05
             quotes = [];
             dates = [];
             dateList = {};
-            $('.progress-status').text('INTERPRETING RESULTS...');
-            $('.progress-bar').animate({width: '100%'},100);
-            $('#loading').animate({opacity: '0'},100);
-            $('.progress-bar').animate({width: '0%'},100);
-
+            progressBar.increment();
             data[0].quote.forEach(function(day) {
               var date = day.Date;
                 dates.push(date);
@@ -203,8 +204,7 @@ v2013-08-05
             complete(null, zip(outputGrid));
         });
     }
-    window.getStocksSortedByDay = getStocksSortedByDay;
-
+    exports.getStocksSortedByDay = getStocksSortedByDay;
     function getZippedDailyAvgs(list_opts, type, complete) {
         getStocks(list_opts, type, function(err, data) {
             var independentVariable = list_opts.stocks[0];
@@ -233,12 +233,7 @@ v2013-08-05
             complete(null, zippedResults);
         });
     }
-    window.getZippedDailyAvgs = getZippedDailyAvgs;
 
-    return {
-      'getStocksSortedByDay': getStocksSortedByDay
-    }
-})(jQuery);
 
 /* Usage Examples
 getStock({ stock: 'AAPL' }, 'quotes', function(err, data) {
