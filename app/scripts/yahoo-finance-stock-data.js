@@ -234,6 +234,10 @@ v2013-08-05
         });
     }
     window.getZippedDailyAvgs = getZippedDailyAvgs;
+
+    return {
+      'getStocksSortedByDay': getStocksSortedByDay
+    }
 })(jQuery);
 
 /* Usage Examples

@@ -7,14 +7,9 @@
 
 'use strict';
 
-var App = require('./app.js');
-require('./yahoo-finance-stock-data.js');
+var Fetcher = require('./Fetcher.js');
+var Progress = require('./Progress.js');
 var d3 = require('d3-browserify');
-
-
-var stocks = ['MSFT', 'AAPL']; // defaults for testing
-
-
 
 
 function showPlot(data) {
@@ -328,14 +323,20 @@ function getDateRange() {
 	var monthsAgo = $('input#months_ago').val();
 	var d2 = $('input#d2').val();
 	var d1 = moment(d2, 'YYYY-MM-DD').subtract(parseInt(monthsAgo), 'months').format('YYYY-MM-DD');
-	console.log({ start: d1, end: d2 });
+	// console.log({ start: d1, end: d2 });
 	return { start: d1, end: d2 };
 }
 
 // on page load, retrieve initial stock data
-getStocksSortedByDay({ stocks: [$('#s1').val(), $('#s2').val()], startDate: getDateRange().start, endDate: getDateRange().end }, 'historicaldata', function(err, data) {
-	showPlot(data);
-});
+function fetchAndPlot() {
+	Fetcher.getQuotesForStockPairSortedByDay({
+		stocks: [$('#s1').val(), $('#s2').val()],
+		startDate: getDateRange().start,
+		endDate: getDateRange().end
+	}).then(showPlot);
+}
+
+fetchAndPlot();
 
 function handleSubmit() {
 	// fade out existing chart
@@ -345,9 +346,7 @@ function handleSubmit() {
 	$('#plot').animate({opacity:0},300);
 
 	// retrieve the data, and call showPlot() when complete
-	getStocksSortedByDay({ stocks: [$('#s1').val(), $('#s2').val()], startDate: getDateRange().start, endDate: getDateRange().end }, 'historicaldata', function(err, data) {
-		showPlot(data);
-	});
+	fetchAndPlot();
 }
 
 var form = $('#req_form').submit(function(e) {
