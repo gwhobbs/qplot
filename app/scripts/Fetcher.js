@@ -14,225 +14,142 @@ var progressBarStates = [
 
 var progressBar = new Progress.bar(progressBarStates, '.progress-bar', '.progress-status');
 
-    // a utility function useful for returning values for certain charting packages
-    function zip(arrays) {
-        return arrays[0].map(function(_,i){
-            return arrays.map(function(array){return array[i];});
-        });}
+// a utility function useful for returning values for certain charting packages
+function zip(arrays) {
+    return arrays[0].map(function(_,i){
+        return arrays.map(function(array){return array[i];});
+    });}
 
-    function getStock(opts, type, complete) {
-        var defs = {
-            desc: false,
-            baseURL: 'http://query.yahooapis.com/v1/public/yql?q=',
-            query: {
-                quotes: 'select * from yahoo.finance.quotes where symbol = "{stock}" | sort(field="{sortBy}", descending="{desc}")',
-                historicaldata: 'select * from yahoo.finance.historicaldata where symbol = "{stock}" and startDate = "{startDate}" and endDate = "{endDate}"'
-            },
-            suffixURL: {
-                quotes: '&env=store://datatables.org/alltableswithkeys&format=json&callback=?',
-                historicaldata: '&env=store://datatables.org/alltableswithkeys&format=json&callback=?'
-            }
-        };
+function getQuotesFromYahoo(opts) {
 
-        opts = opts || {};
+  var type = 'historicaldata';
+  var defs = {
+    desc: false,
+    baseURL: 'http://query.yahooapis.com/v1/public/yql?q=',
+    query: {
+      quotes: 'select * from yahoo.finance.quotes where symbol = "{stock}" | sort(field="{sortBy}", descending="{desc}")',
+      historicaldata: 'select * from yahoo.finance.historicaldata where symbol = "{stock}" and startDate = "{startDate}" and endDate = "{endDate}"'
+    },
+    suffixURL: {
+      quotes: '&env=store://datatables.org/alltableswithkeys&format=json&callback=?',
+      historicaldata: '&env=store://datatables.org/alltableswithkeys&format=json&callback=?'
+    }
+  };
 
-        if (!opts.stock) {
-            complete('No stock defined');
-            return;
+  opts = opts || {};
+
+  if (!opts.stock) {
+    complete('No stock defined');
+    return;
+  }
+
+  var query = defs.query[type]
+  .replace('{stock}', opts.stock)
+  .replace('{sortBy}', defs.sortBy)
+  .replace('{desc}', defs.desc)
+  .replace('{startDate}', opts.startDate)
+  .replace('{endDate}', opts.endDate);
+
+  var url = defs.baseURL + query + (defs.suffixURL[type] || '');
+
+  return Promise.resolve($.getJSON(url)).then(function(res) {
+    return res.query.results.quote;
+  });
+}
+
+function getQuotesFromQuandl(opts) {
+
+    var type = 'historicaldata';
+    var defs = {
+        desc: false,
+        baseURL: 'http://www.quandl.com/api/v1/datasets/',
+        query: {
+            quotes: 'not implemented',
+            historicaldata: '{stock}.json?trim_start={startDate}'
+        },
+        suffixURL: {
+            quotes: 'not implemented',
+            historicaldata: '&auth_token=ckc4qRLaqqyzxhd9y-Cf'
         }
+    };
 
-        var query = defs.query[type]
-        .replace('{stock}', opts.stock)
-        .replace('{sortBy}', defs.sortBy)
-        .replace('{desc}', defs.desc)
-        .replace('{startDate}', opts.startDate)
-        .replace('{endDate}', opts.endDate);
+    opts = opts || {};
 
-        var url = defs.baseURL + query + (defs.suffixURL[type] || '');
-        $.getJSON(url, function(data) {
-            var err = null;
-            if (!data || !data.query) {
-                err = true;
-            }
-
-            complete(err, !err && data.query.results, opts.stock);    });
+    if (!opts.stock) {
+        complete('No stock defined');
+        return;
     }
 
-    function getStockQF(opts, type, complete) {
-        var defs = {
-            desc: false,
-            baseURL: 'http://www.quandl.com/api/v1/datasets/',
-            query: {
-                quotes: 'not implemented',
-                historicaldata: '{stock}.json?trim_start={startDate}'
-            },
-            suffixURL: {
-                quotes: 'not implemented',
-                historicaldata: '&auth_token=ckc4qRLaqqyzxhd9y-Cf'
-            }
-        };
+    var query = defs.query[type]
+    .replace('{stock}', opts.stock)
+    .replace('{startDate}', opts.startDate)
 
-        opts = opts || {};
+    var url = defs.baseURL + query + (defs.suffixURL[type] || '');
 
-        if (!opts.stock) {
-            complete('No stock defined');
-            return;
-        }
-
-        var query = defs.query[type]
-        .replace('{stock}', opts.stock)
-        .replace('{startDate}', opts.startDate)
-
-        var url = defs.baseURL + query + (defs.suffixURL[type] || '');
-        $.getJSON(url, function(data) {
-            var err = null;
-            if (!data || !data.data) {
-                console.log('error');
-                err = true;
-            }
-            complete(err, !err && data, opts.stock);    });
-    }
-
-    function getStocks(list_opts, type, complete) {
-        // figure out how many requests are neccessary and make a container for the results
-        var remaining = list_opts.stocks.length;
-        if (remaining != 2) { throw "Error: getStocks() only supports lists of 2 stocks"; }
-
-        var stocks = list_opts.stocks;
-        var results = [null, null];
-
-        progressBar.start();
-
-        // retrieve data for each stock asynchronously, then combine when finished
-        list_opts.stocks.forEach(function(stock) {
-            opts = list_opts;
-            opts['stock'] = stock; // this is the stock symbol we will be feeding into getStock()
-            if (stock.indexOf('/') > -1) {
-                getStockQF(opts, type, function(err, data, query) {
-                    remaining -= 1;
-                    // if (remaining == 1) {
-                    //     $('.progress-status').text('WAITING FOR ONE MORE CRITICAL PIECE OF DATA...');
-                    //     $('.progress-bar').animate({width: '60%'},100);
-                    // } else {
-                    //     $('.progress.status').text('INTERPRETING RESULTS...');
-                    // }
-                    progressBar.increment();
-                    data['quote'] = []
-                    var colNames = data.column_names;
-                    data['data'].forEach(function(day) {
-                        var d = {};
-                        colNames.forEach(function(colName) {
-                            var i = colNames.indexOf(colName);
-                            d[colName] = day[i];
-                        });
-                        d['Close'] = d['Settle'];
-                        d['Symbol'] = data['code'];
-                        d['Query'] = stock;
-                        data['quote'].push(d);
-                    });
-                    results[stocks.indexOf(stock)] = data;
-                    if (remaining == 0) {
-                        complete(null, results);
-                    }
-                });
-            } else {
-                getStock(opts, type, function(err, data, query) {
-                    remaining -= 1;
-                    progressBar.increment();
-                    data.quote.forEach(function(day) {
-                      day['Query'] = stock;
-                    });
-                    results[stocks.indexOf(stock)] = data;
-                    // check if finshed fetching
-                    if (remaining == 0) {
-                        complete(null, results);
-                    }
-                });
-            }
+    return Promise.resolve($.getJSON(url)).then(function(res) {
+      var quotes = res.data.map(function(dayArray) {
+        var day = {};
+        dayArray.forEach(function(val) {
+          var prop = res.column_names[dayArray.indexOf(val)];
+          day[prop] = val;
         });
-    }
+        day.Symbol = res.code;
+        day.Close = day.Settle; // todo - clean this up, quandl data might not be futures data
 
-    function getStocksSortedByDay(list_opts, type, complete) {
-        getStocks(list_opts, type, function(err, data) {
-          var independentVariable = list_opts.stocks[0];
-          var dependentVariable = list_opts.stocks[1];
-            quotes = [];
-            dates = [];
-            dateList = {};
-            progressBar.increment();
-            data[0].quote.forEach(function(day) {
-              var date = day.Date;
-                dates.push(date);
-                if (!dateList[date]) {
-                  dateList[date] = {};
-                }
-                var query = day.Query;
-                dateList[date][query] = day;
-            });
-            data[1].quote.forEach(function(day) {
-              var date = day.Date;
-              dates.push(date);
-              if (!dateList[date]) {
-                dateList[date] = {};
-              }
-              var query = day.Query;
-              dateList[date][query] = day;
-            });
+        return day;
+      });
+      return quotes;
+    });
+}
 
-            var outputDates = [];
-            var outputInd = [];
-            var outputDep = [];
-            for (var date in dateList) {
-              if (Object.keys(dateList[date]).length < 2) {
-                delete dateList[date];
-              }
+function getQuotes(opts) {
+  if (opts.stock.indexOf('/') > -1) {
+    var promise = getQuotesFromQuandl(opts);
+  } else {
+    var promise = getQuotesFromYahoo(opts);
+  }
+  return promise.then(progressBar.increment());
+}
 
-            }
-            for (var date in dateList) {
+function getQuotesArray(list_opts) {
+    // make an individual query for each stock
+    var queries = list_opts.stocks.map(function(stock) {
+      return {
+        startDate: list_opts.startDate,
+        endDate: list_opts.endDate,
+        stock: stock
+      };
+    });
 
-              outputInd.push(dateList[date][independentVariable]);
-              outputDep.push(dateList[date][dependentVariable]);
-              outputDates.push(date);
-            }
+    return Promise.all(queries.map(getQuotes));
+}
 
+function getQuotesForStockPairSortedByDay(list_opts) {
+    progressBar.start();
+    return getQuotesArray(list_opts).then(function(res) {
+      if (res.length != 2) { throw "Error: getStocksSortedByDay only supports sets of 2 stocks"; }
+      var sec1 = res[0];
+      var sec2 = res[1];
 
-            data.forEach(function(symbol) {
-                quotes.push(symbol.quote);
-            });
-            var outputGrid = [outputInd, outputDep, outputDates];
-            quotes.push(dates);
-            complete(null, zip(outputGrid));
+      var sortedQuotes = [];
+
+      // go through all the days in security 1, try to find a matching date in a security 2 day, then pair them and spit them into sortedQuotes
+      sec1.forEach(function(sec1Day) {
+        sec2.forEach(function(sec2Day) {
+          if (sec1Day.Date == sec2Day.Date) {
+            var date = sec1Day.Date;
+            sortedQuotes.push([sec1Day, sec2Day, date]);
+          }
         });
-    }
-    exports.getStocksSortedByDay = getStocksSortedByDay;
-    function getZippedDailyAvgs(list_opts, type, complete) {
-        getStocks(list_opts, type, function(err, data) {
-            var independentVariable = list_opts.stocks[0];
-            var dependentVariable = list_opts.stocks[1];
-            results = [];
-            dates = ['Date'];
-            latest = ['Latest'];
-            data[0].quote.forEach(function(day) {
-                dates.push(day.Date);
-                latest.push(null);
-            });
+      });
 
-            data.forEach(function(stock) {
-                var symbol = stock.quote[0].Symbol;
-                stockQuotes = [symbol];
-                stock.quote.forEach(function(day) {
-                    var dailyAvg = (parseFloat(day.High) + parseFloat(day.Low)) / 2;
-                    stockQuotes.push(dailyAvg);
-                });
-                results.push(stockQuotes);
+      progressBar.increment();
 
-            });
-            results.push(latest);
+      return sortedQuotes;
 
-            var zippedResults = zip(results);
-            complete(null, zippedResults);
-        });
-    }
+    });
+}
+exports.getQuotesForStockPairSortedByDay = getQuotesForStockPairSortedByDay;
 
 
 /* Usage Examples
@@ -249,9 +166,4 @@ getStock({ stock: 'MSFT', startDate: '2013-01-01', endDate: '2013-02-05' }, 'his
     console.log(arr2);
 });
 
-function zip(arrays) {
-    return arrays[0].map(function(_,i){
-        return arrays.map(function(array){return array[i]})
-    });
-}
 */

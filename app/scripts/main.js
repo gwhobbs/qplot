@@ -328,9 +328,15 @@ function getDateRange() {
 }
 
 // on page load, retrieve initial stock data
-Fetcher.getStocksSortedByDay({ stocks: [$('#s1').val(), $('#s2').val()], startDate: getDateRange().start, endDate: getDateRange().end }, 'historicaldata', function(err, data) {
-	showPlot(data);
-});
+function fetchAndPlot() {
+	Fetcher.getQuotesForStockPairSortedByDay({
+		stocks: [$('#s1').val(), $('#s2').val()],
+		startDate: getDateRange().start,
+		endDate: getDateRange().end
+	}).then(showPlot);
+}
+
+fetchAndPlot();
 
 function handleSubmit() {
 	// fade out existing chart
@@ -340,9 +346,7 @@ function handleSubmit() {
 	$('#plot').animate({opacity:0},300);
 
 	// retrieve the data, and call showPlot() when complete
-	Fetcher.getStocksSortedByDay({ stocks: [$('#s1').val(), $('#s2').val()], startDate: getDateRange().start, endDate: getDateRange().end }, 'historicaldata', function(err, data) {
-		showPlot(data);
-	});
+	fetchAndPlot();
 }
 
 var form = $('#req_form').submit(function(e) {

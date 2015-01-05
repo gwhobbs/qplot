@@ -52,7 +52,7 @@ function bar(states, barTarget, messageTarget) {
 
     this.start = function() {
       $('.progress-bar').width(0);
-      this.containerView.show();
+      this.containerView.animate({opacity:1}, 100);
       this.increment();
     }
 
@@ -94,7 +94,7 @@ function bar(states, barTarget, messageTarget) {
       console.log(progressMessage);
 
       if (this.currentPercentDone() == '100%') {
-        this.containerView.hide();
+        this.containerView.animate({opacity:0},100);
         this.currentStateIndex = 0;
       }
 
