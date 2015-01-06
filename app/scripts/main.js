@@ -10,10 +10,12 @@
 var Fetcher = require('./Fetcher.js');
 var Progress = require('./Progress.js');
 var d3 = require('d3-browserify');
+var moment = require('moment');
 
+var plotView = $('#plot');
 
 function showPlot(data) {
-	$('#plot').empty();
+	plotView.empty();
 
 	// add some margins around the graph
 	var margins = {
@@ -137,7 +139,7 @@ function showPlot(data) {
 		.attr('y', height - 45)
 		.text('slope: ' + leastSquaresCoeff[0].toFixed(2).toString());
 
-	// add curves
+	// add trendline
 	var lineFunction = d3.svg.line()
 		.x(function(d) { return parseFloat(x(d[0].Close)); })
 		.y(function(d) { return parseFloat(y(d[1].Close)); })
@@ -147,7 +149,7 @@ function showPlot(data) {
 		.data(data);
 
 	// make the plot visible
-	$('#plot').animate({opacity:1});
+	plotView.animate({opacity:1});
 
 	plotTrendline(leastSquaresCoeff, 'trendline', '#888', 2);
 
@@ -162,9 +164,6 @@ function showPlot(data) {
 	var coeffSdBottom = leastSquaresCoeff;
 	coeffSdBottom[1] -= 2 * sd;
 	plotTrendline(coeffSdBottom, 'sdline2', '#555', 1);
-
-
-
 
 
 	var day = svg.selectAll('g.node').data(data, function (d) {
@@ -189,7 +188,7 @@ function showPlot(data) {
 			tooltip.transition()
 				.duration(200)
 				.style('opacity', .9);
-			tooltip.html('<b>'+ moment(d[2],'YYYY-MM-DD').format('LL')+'</b>' + '<br/>' + moment(d[0].Date,'YYYY-MM-DD').format('LL') + '<br/>' + moment(d[1].Date,'YYYY-MM-DD').format('LL') + '<br/>'+ d[0].Symbol + ': ' + d[0].Close + '<br />' +d[1].Symbol + ': ' + d[1].Close)
+			tooltip.html('<b>'+ moment(d[2],'YYYY-MM-DD').format('LL')+'</b>' + '<br/>'+ d[0].Symbol + ': ' + d[0].Close + '<br />' +d[1].Symbol + ': ' + d[1].Close)
 				.style('left', (d3.event.pageX + 5) + 'px')
 				.style('top', (d3.event.pageY - 28) + 'px');
 		})
@@ -213,7 +212,7 @@ function showPlot(data) {
 
 		// some plotting functions
 
-		function plotTrendline(leastSquaresCoeff, cssClass, color, width) {
+	function plotTrendline(leastSquaresCoeff, cssClass, color, width) {
 		var x1 = d3.min(xSeries);
 		var y1 = trendlineY(d3.min(xSeries));
 
@@ -293,29 +292,29 @@ function showPlot(data) {
 
 
 // returns slope, intercept and r-square of the line
-	function leastSquares(xSeries, ySeries) {
-		var reduceSumFunc = function(prev, cur) { return prev + cur; };
+function leastSquares(xSeries, ySeries) {
+	var reduceSumFunc = function(prev, cur) { return prev + cur; };
 
-		var xBar = xSeries.reduce(reduceSumFunc) * 1.0 / xSeries.length;
-		var yBar = ySeries.reduce(reduceSumFunc) * 1.0 / ySeries.length;
+	var xBar = xSeries.reduce(reduceSumFunc) * 1.0 / xSeries.length;
+	var yBar = ySeries.reduce(reduceSumFunc) * 1.0 / ySeries.length;
 
-		var ssXX = xSeries.map(function(d) { return Math.pow(d - xBar, 2); })
-			.reduce(reduceSumFunc);
+	var ssXX = xSeries.map(function(d) { return Math.pow(d - xBar, 2); })
+		.reduce(reduceSumFunc);
 
-		var ssYY = ySeries.map(function(d) { return Math.pow(d - yBar, 2); })
-			.reduce(reduceSumFunc);
+	var ssYY = ySeries.map(function(d) { return Math.pow(d - yBar, 2); })
+		.reduce(reduceSumFunc);
 
-		var ssXY = xSeries.map(function(d, i) { return (d - xBar) * (ySeries[i] - yBar); })
-			.reduce(reduceSumFunc);
+	var ssXY = xSeries.map(function(d, i) { return (d - xBar) * (ySeries[i] - yBar); })
+		.reduce(reduceSumFunc);
 
-		var slope = ssXY / ssXX;
-		var intercept = yBar - (xBar * slope);
-		var rSquare = Math.pow(ssXY, 2) / (ssXX * ssYY);
+	var slope = ssXY / ssXX;
+	var intercept = yBar - (xBar * slope);
+	var rSquare = Math.pow(ssXY, 2) / (ssXX * ssYY);
 
-		return [slope, intercept, rSquare];
-	}
+	return [slope, intercept, rSquare];
+}
 
-var moment = require('moment');
+
 
 $('input#d2').val(moment().format('YYYY-MM-DD'));
 
@@ -340,10 +339,7 @@ fetchAndPlot();
 
 function handleSubmit() {
 	// fade out existing chart
-	$('.progress-bar').width(0);
-
-	$('#loading').animate({opacity:1},100);
-	$('#plot').animate({opacity:0},300);
+	plotView.animate({opacity:0},300);
 
 	// retrieve the data, and call showPlot() when complete
 	fetchAndPlot();
