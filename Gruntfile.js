@@ -31,6 +31,15 @@ module.exports = function(grunt) {
         src: ['**']
       }
     },
+    manifest: {
+      generate: {
+        options: {
+          basePath: 'dist'
+        },
+        src: ['scripts/*.js','styles/*.css'],
+        dest: 'dist/qplot.appcache'
+      }
+    },
     banner: '/*!\n' +
             ' * <%= pkg.name %>-<%= pkg.version %>\n' +
             ' * <%= pkg.author %>\n' +
@@ -428,7 +437,8 @@ module.exports = function(grunt) {
     'uglify',
     'copy:dist',
     'rev',
-    'usemin'
+    'usemin',
+    'manifest:generate'
   ]);
 
   grunt.registerTask('default', [
