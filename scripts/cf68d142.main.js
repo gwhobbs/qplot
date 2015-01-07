@@ -17961,6 +17961,7 @@ fetchAndPlot();
 
 var d3 = require('d3-browserify');
 var $ = require('jquery-browserify');
+var moment = require('moment');
 
 var plotView = $('#plot'); // this is the container for the plot
 
@@ -18266,7 +18267,8 @@ function showPlot(data) {
 
 
 exports.showPlot = showPlot;
-},{"d3-browserify":6,"jquery-browserify":7}],5:[function(require,module,exports){
+
+},{"d3-browserify":6,"jquery-browserify":7,"moment":8}],5:[function(require,module,exports){
 module.exports=require(1)
 },{}],6:[function(require,module,exports){
 module.exports = function() {
