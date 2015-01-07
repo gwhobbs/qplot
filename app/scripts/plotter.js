@@ -1,11 +1,14 @@
 'use strict';
 
 var d3 = require('d3-browserify');
+var $ = require('jquery-browserify');
 
-
-var plotView = $('#plot');
+var plotView = $('#plot'); // this is the container for the plot
 
 function showPlot(data) {
+
+	// ---------- SETUP ------------
+
 	plotView.empty();
 
 	// add some margins around the graph
@@ -18,12 +21,6 @@ function showPlot(data) {
 
 	var width = $(document).width();
 	var height = $(document).height() - 100; // height of title bar
-
-	// this will be the color scale for the dots, oldest being blue, newest being red
-	var colors = d3.scale.linear()
-		.domain([0,data.length])
-		.interpolate(d3.interpolateHsl)
-		.range(['#ff0000', '#0000ff']);
 
 	// add the SVG component #plot
 	var svg = d3.select('#plot')
@@ -43,6 +40,12 @@ function showPlot(data) {
 		}))
 		.range([height - margins.top - margins.bottom, 0]);
 
+	// this will be the color scale for the dots, oldest being blue, newest being red
+	var colors = d3.scale.linear()
+		.domain([0,data.length])
+		.interpolate(d3.interpolateHsl)
+		.range(['#ff0000', '#0000ff']);
+
 	// functions to produces the axes
 	function xAxis() {
 		return d3.svg.axis()
@@ -57,6 +60,13 @@ function showPlot(data) {
 			.orient('left')
 			.tickPadding(2);
 	}
+
+	// draw x and y axes
+	svg.append('g').attr('class', 'x axis').attr('transform', 'translate(0,' + y.range()[0] + ')');
+	svg.append('g').attr('class', 'y axis');
+
+	svg.selectAll('g.y.axis').call(yAxis());
+	svg.selectAll('g.x.axis').call(xAxis());
 
 	// make background grid
 	svg.append('g')
@@ -73,13 +83,6 @@ function showPlot(data) {
 			.tickSize(-width, 0, 0)
 			.tickFormat('')
 		);
-
-	// draw x and y axes
-	svg.append('g').attr('class', 'x axis').attr('transform', 'translate(0,' + y.range()[0] + ')');
-	svg.append('g').attr('class', 'y axis');
-
-	svg.selectAll('g.y.axis').call(yAxis());
-	svg.selectAll('g.x.axis').call(xAxis());
 
 	// draw axes names
 	svg.append('text')
@@ -99,22 +102,20 @@ function showPlot(data) {
 		.attr('dy', '.71em')
 		.text(data[0][1].Symbol);
 
-
+	// this will be the tooltip, and will change depending on mouse position
 	var tooltip = d3.select('body').append('div')
 		.attr('class', 'tooltip')
 		.style('opacity',0);
-
-
-
-
-
-
 
 	// figure out least squares regression
 	var xSeries = data.map(function(d) { return parseFloat(d[0].Close)});
 	var ySeries = data.map(function(d) { return parseFloat(d[1].Close)});
 
 	var leastSquaresCoeff = leastSquares(xSeries, ySeries);
+
+
+	// ---------- DRAWING ------------
+
 
 	// print r squared
 	svg.append('text')
@@ -130,18 +131,10 @@ function showPlot(data) {
 		.attr('y', height - 45)
 		.text('slope: ' + leastSquaresCoeff[0].toFixed(2).toString());
 
-	// add trendline
-	var lineFunction = d3.svg.line()
-		.x(function(d) { return parseFloat(x(d[0].Close)); })
-		.y(function(d) { return parseFloat(y(d[1].Close)); })
-		.interpolate('cardinal');
-
-	var pathline = svg.selectAll('.' + 'pathline')
-		.data(data);
-
 	// make the plot visible
 	plotView.animate({opacity:1});
 
+	// plot a trendline
 	plotTrendline(leastSquaresCoeff, 'trendline', '#888', 2);
 
 	var sd = standardDeviation(data);
@@ -166,6 +159,7 @@ function showPlot(data) {
 			return 'translate(' + x(d[0].Close) + ',' + y(d[1].Close) + ')';
 		});
 
+	// used below to scale the drawing animation so that it is always the same length
 	var monthsAgo = parseInt($('input#months_ago').val());
 
 	// draw circles
@@ -201,12 +195,14 @@ function showPlot(data) {
 			return (data.length - data.indexOf(d)) * (5/monthsAgo*3);
 		});
 
-		// some plotting functions
+	// ------------ SUPPORT FUNCTIONS ---------------
+
 
 	function plotTrendline(leastSquaresCoeff, cssClass, color, width) {
 		var x1 = d3.min(xSeries);
 		var y1 = trendlineY(d3.min(xSeries));
 
+		// some logic to clip the trendline at the edges of the plot
 		if ( y1 < d3.min(ySeries) ) {
 			y1 = d3.min(ySeries);
 			x1 = trendlineX(y1);
@@ -246,10 +242,12 @@ function showPlot(data) {
 			.duration(1000);
 	}
 
+	// based on the leastSquaresCoeff, returns a Y val for a given X val
 	function trendlineY(xVal) {
 		return leastSquaresCoeff[0]*xVal + leastSquaresCoeff[1];
 	}
 
+	// based on the leastSquaresCoeff, returns an X val for a given Y val
 	function trendlineX(yVal) {
 		return (yVal - leastSquaresCoeff[1]) / leastSquaresCoeff[0];
 	}
@@ -268,6 +266,7 @@ function showPlot(data) {
 	  return stdDev;
 	}
 
+	// returns an average of all the values in an array
 	function average(data){
 	  var sum = data.reduce(function(sum, value){
 	    return sum + value;
@@ -277,7 +276,7 @@ function showPlot(data) {
 	  return avg;
 	}
 
-	// returns slope, intercept and r-square of the line
+	// returns slope, intercept and r-square of the regression line for a dataset
 	function leastSquares(xSeries, ySeries) {
 		var reduceSumFunc = function(prev, cur) { return prev + cur; };
 
