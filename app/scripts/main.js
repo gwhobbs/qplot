@@ -36,13 +36,14 @@ function fetchAndPlot() {
 // form handling function
 function handleSubmit() {
 	// fade out existing chart
-	plotView.animate({opacity:0},300);
+	$('#plot').animate({opacity:0},300);
 	fetchAndPlot();
 }
 
 // setup form handling hook
 var form = $('#req_form').submit(function(e) {
 	e.preventDefault();
+	console.log('submit');
 	handleSubmit();
 });
 
