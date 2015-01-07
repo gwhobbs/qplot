@@ -2,6 +2,7 @@
 
 var d3 = require('d3-browserify');
 var $ = require('jquery-browserify');
+var moment = require('moment');
 
 var plotView = $('#plot'); // this is the container for the plot
 
