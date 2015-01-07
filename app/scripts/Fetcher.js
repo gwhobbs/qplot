@@ -53,6 +53,7 @@ function getQuotesFromYahoo(opts) {
   var url = defs.baseURL + query + (defs.suffixURL[type] || '');
 
   return Promise.resolve($.getJSON(url)).then(function(res) {
+    progressBar.increment();
     return res.query.results.quote;
   });
 }
@@ -98,17 +99,17 @@ function getQuotesFromQuandl(opts) {
 
         return day;
       });
+      progressBar.increment();
       return quotes;
     });
 }
 
 function getQuotes(opts) {
   if (opts.stock.indexOf('/') > -1) {
-    var promise = getQuotesFromQuandl(opts);
+    return getQuotesFromQuandl(opts);
   } else {
-    var promise = getQuotesFromYahoo(opts);
+    return getQuotesFromYahoo(opts);
   }
-  return promise.then(progressBar.increment());
 }
 
 function getQuotesArray(list_opts) {
@@ -138,7 +139,9 @@ function getQuotesForStockPairSortedByDay(list_opts) {
         sec2.forEach(function(sec2Day) {
           if (sec1Day.Date == sec2Day.Date) {
             var date = sec1Day.Date;
-            sortedQuotes.push([sec1Day, sec2Day, date]);
+            if ((sec1Day.Close !== undefined) && (sec2Day.Close !== undefined)) {
+              sortedQuotes.push([sec1Day, sec2Day, date]);
+            }
           }
         });
       });
