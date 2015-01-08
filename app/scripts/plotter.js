@@ -17,7 +17,7 @@ function showPlot(data) {
 		'left' : 70,
 		'right' : 30,
 		'top' : 30,
-		'bottom' : 50
+		'bottom' : 70
 	};
 
 	var width = $(document).width();
@@ -62,13 +62,6 @@ function showPlot(data) {
 			.tickPadding(2);
 	}
 
-	// draw x and y axes
-	svg.append('g').attr('class', 'x axis').attr('transform', 'translate(0,' + y.range()[0] + ')');
-	svg.append('g').attr('class', 'y axis');
-
-	svg.selectAll('g.y.axis').call(yAxis());
-	svg.selectAll('g.x.axis').call(xAxis());
-
 	// make background grid
 	svg.append('g')
 		.attr('class', 'grid')
@@ -85,14 +78,30 @@ function showPlot(data) {
 			.tickFormat('')
 		);
 
+	// draw x and y axes
+	svg.append('g').attr('class', 'x axis').attr('transform', 'translate(0,' + (y.range()[0]) + ')');
+	svg.append('g').attr('class', 'y axis');
+
+	svg.selectAll('g.y.axis').call(yAxis());
+	svg.selectAll('g.x.axis').call(xAxis());
+
 	// draw axes names
 	svg.append('text')
 		.attr('fill', '#555')
 		.attr('class', 'label')
-		.attr('text-anchor', 'end')
+		.attr('text-anchor', 'middle')
 		.attr('x', width / 2)
-		.attr('y', height - 35)
+		.attr('y', height - 60)
 		.text(data[0][0].Symbol);
+
+	// draw axes names
+	svg.append('text')
+		.attr('fill', '#555')
+		.attr('class', 'label')
+		.attr('text-anchor', 'middle')
+		.attr('x', width / 2)
+		.attr('y', height - 45)
+		.text(data[0][0].Name);
 
 	svg.append('text')
 		.attr('fill', '#555')
@@ -122,23 +131,30 @@ function showPlot(data) {
 	svg.append('text')
 		.attr('class', 'label')
 		.attr('x', width - 200)
-		.attr('y', height - 35)
+		.attr('y', height - 45)
 		.text('r squared: ' + leastSquaresCoeff[2].toFixed(2).toString());
 
 	// print slope
 	svg.append('text')
 		.attr('class', 'label')
 		.attr('x', width - 200)
-		.attr('y', height - 45)
-		.text('slope: ' + leastSquaresCoeff[0].toFixed(2).toString());
+		.attr('y', height - 60)
+		.text('y = ' + leastSquaresCoeff[0].toFixed(2).toString() + 'x + ' + leastSquaresCoeff[1].toFixed(2).toString());
+
+	var sd = standardDeviation(data);
+
+	// print standard deviation
+	svg.append('text')
+		.attr('class', 'label')
+		.attr('x', width - 200)
+		.attr('y', height - 30)
+		.text('StdDev: ' + sd.toFixed(2).toString());
 
 	// make the plot visible
 	plotView.animate({opacity:1});
 
 	// plot a trendline
 	plotTrendline(leastSquaresCoeff, 'trendline', '#888', 2);
-
-	var sd = standardDeviation(data);
 
 	// plot a trendline 1 standard deivation up
 	var coeffSdTop = leastSquaresCoeff;

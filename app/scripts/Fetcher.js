@@ -94,6 +94,7 @@ function getQuotesFromQuandl(opts) {
           var prop = res.column_names[dayArray.indexOf(val)];
           day[prop] = val;
         });
+        day.Name = res.name;
         day.Symbol = res.code;
         day.Close = day.Settle; // todo - clean this up, quandl data might not be futures data
 
