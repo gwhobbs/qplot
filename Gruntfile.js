@@ -242,9 +242,17 @@ module.exports = function(grunt) {
     // check index.html to edit your build targets
     // enable this task if you prefer defining your build targets here
     uglify: {
+      // dist: {
+      //   src: '.tmp/scripts/app.js',
+      //   dest: '.tmp/scripts/app.js'
+      // }
       dist: {
-        src: '.tmp/scripts/app.js',
-        dest: '.tmp/scripts/app.js'
+        files: [{
+          expand: true,
+          cwd: 'dist/scripts/',
+          src: ['*.js', '**/*.js'],
+          dest: 'dist/scripts/'
+        }]
       }
     },
     'bower-install': {
